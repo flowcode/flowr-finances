@@ -1,0 +1,36 @@
+{
+    "name" : "flower/financesbundle",
+    "description" : "finances bundle",
+    "type" : "symfony-bundle",
+    "authors" : [{
+        "name" : "Francisco Memoli",
+        "email" : "fmemoli@flowcode.com.ar"
+    },
+    {
+        "name" : "Juan Manuel Agüero",
+        "email" : "jaguero@flowcode.com.ar"
+    }],
+    "keywords" : [
+        "finances bundle"
+    ],
+    "license" : [
+        "MIT"
+    ],
+    "require" : {
+        "flower/clientsbundle": "dev-master",
+        "flower/stockbundle": "dev-master"
+    },
+    "autoload" : {
+        "psr-0" : {
+            "Flower\\FinancesBundle" : ""
+        }
+    },
+    "target-dir" : "Flower/FinancesBundle",
+    "repositories" : [{
+    }],
+    "extra" : {
+    "branch-alias" : {
+            "dev-master" : "1.0.0-dev"
+        }
+    }
+}
