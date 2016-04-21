@@ -1,0 +1,119 @@
+{% extends "FlowerCoreBundle::layout.html.twig" %}
+
+{% block title %}CustomerInvoiceItem - {{ parent() }}{% endblock %}
+
+{% block body %}
+    <section class="content-header">
+        <h1>
+            <a href="{{ path('finance_customer_invoice_item') }}"> {{ 'CustomerInvoiceItem list'|trans({'CustomerInvoiceItem': 'CustomerInvoiceItem'}, 'CustomerInvoiceItem') }}</a>
+            /
+            {{ 'CustomerInvoiceItem' | trans({}, 'CustomerInvoiceItem')}}
+        </h1>
+    </section>
+    <section class="content">    
+        <div class="box"  id='showCustomerInvoiceItem'>
+            <div class="box-header">
+                <div class="box-tools  pull-right">
+                            {{ form_start(delete_form) }}
+        {{ form_widget(delete_form) }}
+
+        <div class="btn-group record_actions">            <button class="btn btn-link btn-sm" type="submit"> {{ 'Delete'|trans({}, 'CustomerInvoiceItem') }}</button>
+            <input name="modal" type="hidden" value="0">
+            
+                <a class="btn btn-link  btn-sm" onclick="showEdit(true)">
+                    {{ 'Edit'|trans({}, 'CustomerInvoiceItem') }}
+                </a>
+</div>
+            <input name="modal" type="hidden" value="0">
+        {{ form_end(delete_form) }}
+
+</div>
+            </div>
+            <div class="box-body">
+                <table class="table table-hover record_properties">
+                    <tbody>                            
+                        <tr>
+                            <th scope="row">{{'Units'|trans({}, 'CustomerInvoiceItem')}}</th>
+                            <td>{{ customerinvoiceitem.units }}</td>
+                        </tr>                            
+                        <tr>
+                            <th scope="row">{{'Unitprice'|trans({}, 'CustomerInvoiceItem')}}</th>
+                            <td>{{ customerinvoiceitem.unitPrice }}</td>
+                        </tr>                            
+                        <tr>
+                            <th scope="row">{{'Total'|trans({}, 'CustomerInvoiceItem')}}</th>
+                            <td>{{ customerinvoiceitem.total }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="box-footer">
+            
+            </div>
+        </div>
+        <div class="box" id='editFormCustomerInvoiceItem'  style="display: none;">
+            <div class="box-header">
+                <div class="box-tools">
+                    {{ form_start(delete_form) }}
+                    {{ form_widget(delete_form) }}
+                    <div class="btn-group record_actions">
+                        <button class="btn btn-link btn-sm" type="submit"> {{ 'Delete'|trans({}, 'CustomerInvoiceItem') }}</button>
+                        <a class="btn btn-link  btn-sm" onclick="showEdit(false)">
+                        {{ 'Cancel'|trans({}, 'Account') }}
+                        </a>
+                    </div>
+                    <input name="modal" type="hidden" value="0">
+                    {{ form_end(delete_form) }}
+                </div>
+            </div>
+            <div class="box-body">
+
+            {{ form_start(edit_form) }}
+                {{ form_widget(edit_form) }}
+                <p>
+                    <button class="btn-default btn" type="submit">{{ 'save'|trans | capitalize}}</button>
+                </p>
+            {{ form_end(edit_form) }}
+            </div>
+            <div class="box-footer">
+            </div>
+        </div>
+    </section>
+
+        <div class="btn-group record_actions"></div>
+
+        <div id="delete_confirm" class="modal fade">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h3>{{ 'Confirm delete'|trans({}, 'CustomerInvoiceItem') }}</h3>
+                    </div>
+                    <div class="modal-body">
+                        <p>{{ 'You are about to delete an item'|trans({}, 'CustomerInvoiceItem') }}, {{ 'this procedure is irreversible'|trans({}, 'CustomerInvoiceItem') }}.</p>
+                        <p>{{ 'Do you want to proceed?'|trans({}, 'CustomerInvoiceItem') }}</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-danger">{{ 'Yes'|trans({}, 'CustomerInvoiceItem') }}</button>
+                        <button class="btn btn-default" data-dismiss="modal">{{ 'No'|trans({}, 'CustomerInvoiceItem') }}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+{% endblock %}
+{% block javascripts %}
+
+    {{ parent() }}
+    <script type="text/javascript">
+        function showEdit(show){
+            if(show){
+                $('#showCustomerInvoiceItem').hide();
+                $('#editFormCustomerInvoiceItem').show();
+            }else{
+                $('#showCustomerInvoiceItem').show();
+                $('#editFormCustomerInvoiceItem').hide();
+            }
+        }
+        
+    </script>
+{% endblock %}

@@ -1,0 +1,43 @@
+<section class="sidebar">
+    <div class="app-header">
+        <div class="row">
+            <div class="col-sm-12">
+                <img src="{{ asset('bundles/flowercore/images/icons/Bank-100.png') }}"
+                     class="img-responsive pull-left" width="40">
+                <span>
+                    {{ 'finances'|trans|title }}
+                </span>
+            </div>
+        </div>
+    </div>
+    <ul class="sidebar-menu">
+
+        <li {% if app_sale is defined %}class="active"{% endif %}>
+            <a href="{{ path('finance_customer_invoice') }}">
+                {{ 'customer_invoices'|trans({}, 'Finance')|title }}
+            </a>
+        </li>
+        <li {% if app_sale is defined %}class="active"{% endif %}>
+            <a href="{{ path('finance_account') }}">
+                {{ 'accounts'|trans({}, 'Finance')|title }}
+            </a>
+        </li>
+        <li {% if app_sale is defined %}class="active"{% endif %}>
+            <a href="{{ path('finance_transaction') }}">
+                {{ 'transactions'|trans({}, 'Finance')|title }}
+            </a>
+        </li>
+        <li {% if app_sale is defined %}class="active"{% endif %}>
+            <a href="{{ path('finance_journal_entry') }}">
+                {{ 'journal_entries'|trans({}, 'Finance')|title }}
+            </a>
+        </li>
+        <li {% if app_sale is defined %}class="active"{% endif %}>
+            <a href="#">
+                {{ 'reports'|trans({}, 'Finance')|title }}
+            </a>
+        </li>
+
+
+    </ul>
+</section>

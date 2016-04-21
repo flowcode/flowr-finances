@@ -1,0 +1,21 @@
+
+#accounts
+accounts: cuentas
+account: cuenta
+
+account_type_asset: activo
+account_type_income: ingresos
+account_type_expense: egresos
+account_type_liability: pasivo
+account_type_equity: equidad
+
+#customer invoices
+customer_invoices: facturas
+
+#transactions
+transactions: transacciones
+
+#journal entries
+journal_entries: libro diario
+
+reports: reportes

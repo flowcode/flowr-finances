@@ -1,0 +1,93 @@
+{% extends "FlowerCoreBundle::layout.html.twig" %}
+
+{% block title %}{{ '%entity% creation'|trans({'%entity%': 'Transaction'}, 'Transaction') }} - {{ parent() }}{% endblock %}
+
+{% block body %}
+    <section class="content-header">
+        <h1>
+            <a href="{{ path('finance_transaction') }}"> {{ '%entity% list'|trans({'%entity%': 'Transaction'}, 'Transaction') }}</a>
+            /
+            {{ 'Transaction' | trans({}, 'Transaction') }}
+        </h1>
+
+    </section>
+    <section class="content">
+        <div class="box">
+            <div class="box-body">
+                {{ form_start(form, {action: path('finance_transaction_create')}) }}
+                {{ form_row(form.description) }}
+                {{ form_row(form.date) }}
+
+                <h3>Journal Entries</h3>
+                <table class="table table-condensed">
+                    <tbody class="journal-entries"
+                           data-prototype="{{ form_widget(form.journalEntries.vars.prototype)|e }}">
+                    {% for entry in form.journalEntries %}
+                        <tr>
+                            <td>{{ form_row(entry.account) }}</td>
+                            <td>{{ form_row(entry.debit) }}</td>
+                            <td>{{ form_row(entry.credit) }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                <p>
+                    <button class="btn-default btn" type="submit">{{ 'save'|trans | capitalize }}</button>
+                </p>
+                {{ form_end(form) }}
+            </div>
+            <div class="box-footer">
+
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        var $collectionHolder;
+
+        // setup an "add a tag" link
+        var $addTagLink = $('<a href="#" class="add_tag_link">Add Journal entry</a>');
+        var $newLinkLi = $('<li></li>').append($addTagLink);
+        function addTagForm($collectionHolder, $newLinkLi) {
+            // Get the data-prototype explained earlier
+            var prototype = $collectionHolder.data('prototype');
+
+            // get the new index
+            var index = $collectionHolder.data('index');
+
+            // Replace '__name__' in the prototype's HTML to
+            // instead be a number based on how many items we have
+            var newForm = prototype.replace(/__name__/g, index);
+
+            // increase the index with one for the next item
+            $collectionHolder.data('index', index + 1);
+
+            // Display the form in the page in an li, before the "Add a tag" link li
+            var $newFormLi = $('<tr></tr>').append(newForm);
+            $newLinkLi.before($newFormLi);
+        }
+        jQuery(document).ready(function () {
+            // Get the ul that holds the collection of tags
+            $collectionHolder = $('tbody.journal-entries');
+
+            // add the "add a tag" anchor and li to the tags ul
+            $collectionHolder.append($newLinkLi);
+
+            // count the current form inputs we have (e.g. 2), use that as the new
+            // index when inserting a new item (e.g. 2)
+            $collectionHolder.data('index', $collectionHolder.find(':input').length);
+
+            $addTagLink.on('click', function (e) {
+                // prevent the link from creating a "#" on the URL
+                e.preventDefault();
+
+                // add a new tag form (see next code block)
+                addTagForm($collectionHolder, $newLinkLi);
+            });
+        });
+    </script>
+
+{% endblock %}

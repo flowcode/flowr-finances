@@ -1,0 +1,70 @@
+{% extends "FlowerCoreBundle::layout.html.twig" %}
+
+{% block title %}{{ '%entity% list'|trans({'%entity%': 'CustomerInvoice'}, 'CustomerInvoice') }} - {{ parent() }}{% endblock %}
+{% macro thead(name, field, label) %}
+    {% spaceless %}
+        {% set sort = app.session.get('sort.' ~ name) %}
+        {% if sort and sort.field == field %}
+            {% if sort.type == 'DESC' %}
+                <a href="{{ path('finance_customer_invoice_sort', {field: field, type: 'ASC'}) }}">{{ label | trans({},'CustomerInvoice')}} <i class="fa fa-sort-down"></i></a>
+            {% elseif sort.type == 'ASC' %}
+                <a href="{{ path('finance_customer_invoice_sort', {field: field, type: 'DESC'}) }}">{{ label | trans({},'CustomerInvoice')}} <i class="fa fa-sort-up"></i></a>
+            {% endif %}
+        {% else %}
+            <a href="{{ path('finance_customer_invoice_sort', {field: field, type: 'ASC'}) }}">{{ label | trans({},'CustomerInvoice')}} <i class="fa fa-sort"></i></a>
+        {% endif %}
+    {% endspaceless %}
+{% endmacro %}
+
+{% from _self import thead %}
+
+{% block app_menu %}
+    {{ include("FlowerFinancesBundle::appnav.html.twig", { 'app_account': true }) }}
+{% endblock %}
+
+
+{% block body %}
+    <section class="content-header">
+        <h1>
+            {{ '%entity% list'|trans({'%entity%': 'CustomerInvoice'}, 'CustomerInvoice') }}
+        </h1>
+    </section>
+    <section class="content">    
+        <div class="box">
+            <div class="box-header">
+                <div class="box-tools pull-right">                    <a class="btn btn-link btn-sm" href={{ path('finance_customer_invoice_new') }}>
+                        <i class="fa fa-plus"></i> {{ 'Create a new %entity%'|trans({'%entity%': 'CustomerInvoice'}, 'CustomerInvoice') }}
+                    </a>
+                            </div>
+            </div>
+            <div class="box-body">    
+            <table class="table table-hover records_list table-condensed">
+                <thead>
+                    <tr>                        <th scope="col">{{ thead('customerinvoice', 'created', 'Created') }}</th>                        <th scope="col">{{ thead('customerinvoice', 'updated', 'Updated') }}</th>                        <th scope="col">{{ thead('customerinvoice', 'total', 'Total') }}</th>                        <th scope="col">{{ thead('customerinvoice', 'totalWithTax', 'Totalwithtax') }}</th>                        <th scope="col">{{ thead('customerinvoice', 'discount', 'Discount') }}</th>                        <th scope="col">{{ thead('customerinvoice', 'totalDiscount', 'Totaldiscount') }}</th>                        <th scope="col">{{ thead('customerinvoice', 'tax', 'Tax') }}</th>                        <th scope="col">{{ thead('customerinvoice', 'status', 'Status') }}</th>                    </tr>
+                </thead>
+                <tbody>
+                    {% for customerinvoice in paginator %}
+                        <tr>
+                                                             
+                                <td><a href="{{ path('finance_customer_invoice_show', {id: customerinvoice.id}) }}">{{ customerinvoice.created }}</a></td>
+                                <td>{% if customerinvoice.updated %}{{ customerinvoice.updated|date('Y-m-d H:i:s') }}{% endif %}</td>
+                                <td>{{ customerinvoice.total }}</td>
+                                <td>{{ customerinvoice.totalWithTax }}</td>
+                                <td>{{ customerinvoice.discount }}</td>
+                                <td>{{ customerinvoice.totalDiscount }}</td>
+                                <td>{{ customerinvoice.tax }}</td>
+                                <td>{{ customerinvoice.status }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            
+            {{ knp_pagination_render(paginator) }}
+            </div>
+        <div class="box-footer">
+
+        </div>
+        
+    </section>        
+
+{% endblock %}
