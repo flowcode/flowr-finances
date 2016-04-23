@@ -2,6 +2,8 @@
 
 namespace Flower\FinancesBundle\Controller;
 
+use Flower\FinancesBundle\Entity\CustomerInvoiceItem;
+use Flower\ModelBundle\Entity\Sales\Sale;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -31,7 +33,7 @@ class CustomerInvoiceController extends Controller
         $qb = $em->getRepository('FlowerFinancesBundle:CustomerInvoice')->createQueryBuilder('c');
         $this->addQueryBuilderSort($qb, 'customerinvoice');
         $paginator = $this->get('knp_paginator')->paginate($qb, $request->query->get('page', 1), 20);
-        
+
         return array(
             'paginator' => $paginator,
         );
@@ -54,8 +56,8 @@ class CustomerInvoiceController extends Controller
 
         return array(
 
-        'customerinvoice' => $customerinvoice,
-        'edit_form'   => $editForm->createView(),
+            'customerinvoice' => $customerinvoice,
+            'edit_form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
 
         );
@@ -75,8 +77,53 @@ class CustomerInvoiceController extends Controller
 
         return array(
             'customerinvoice' => $customerinvoice,
-            'form'   => $form->createView(),
+            'form' => $form->createView(),
         );
+    }
+
+
+    /**
+     * Creates a new CustomerInvoice entity.
+     *
+     * @Route("/create/sale/{id}", name="finance_customer_invoice_create_from_sale")
+     * @Method("GET")
+     * @Template("FlowerFinancesBundle:CustomerInvoice:new.html.twig")
+     */
+    public function createFromSaleAction(Request $request, Sale $sale)
+    {
+        $customerinvoice = new CustomerInvoice();
+
+        $customerinvoice->setAccount($sale->getAccount());
+        $customerinvoice->setDiscount($sale->getDiscount());
+        $customerinvoice->setTax($sale->getTax());
+        $customerinvoice->setTotal($sale->getTotal());
+        $customerinvoice->setTotalDiscount($sale->getTotalDiscount());
+        $customerinvoice->setTotalWithTax($sale->getTotalWithTax());
+        $customerinvoice->setSale($sale);
+
+        foreach ($sale->getSaleItems() as $saleItem) {
+            $invoiceItem = new CustomerInvoiceItem();
+
+            $invoiceItem->setProduct($saleItem->getProduct());
+            $invoiceItem->setService($saleItem->getService());
+            $invoiceItem->setTotal($saleItem->getTotal());
+            $invoiceItem->setCustomerInvoice($customerinvoice);
+            $invoiceItem->setUnitPrice($saleItem->getUnitPrice());
+            $invoiceItem->setUnits($saleItem->getUnits());
+
+            $customerinvoice->addItem($invoiceItem);
+
+        }
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($customerinvoice);
+        $em->flush();
+
+        $sale->setCustomerInvoice($customerinvoice);
+        $em->flush();
+
+        return $this->redirect($this->generateUrl('finance_customer_invoice_show', array('id' => $customerinvoice->getId())));
+
     }
 
     /**
@@ -100,9 +147,10 @@ class CustomerInvoiceController extends Controller
 
         return array(
             'customerinvoice' => $customerinvoice,
-            'form'   => $form->createView(),
+            'form' => $form->createView(),
         );
     }
+
 
     /**
      * Displays a form to edit an existing CustomerInvoice entity.
@@ -121,7 +169,7 @@ class CustomerInvoiceController extends Controller
 
         return array(
             'customerinvoice' => $customerinvoice,
-            'edit_form'   => $editForm->createView(),
+            'edit_form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         );
     }
@@ -148,7 +196,7 @@ class CustomerInvoiceController extends Controller
 
         return array(
             'customerinvoice' => $customerinvoice,
-            'edit_form'   => $editForm->createView(),
+            'edit_form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         );
     }
@@ -167,9 +215,9 @@ class CustomerInvoiceController extends Controller
     }
 
     /**
-     * @param string $name  session name
+     * @param string $name session name
      * @param string $field field name
-     * @param string $type  sort type ("ASC"/"DESC")
+     * @param string $type sort type ("ASC"/"DESC")
      */
     protected function setOrder($name, $field, $type = 'ASC')
     {
@@ -189,7 +237,7 @@ class CustomerInvoiceController extends Controller
 
     /**
      * @param QueryBuilder $qb
-     * @param string       $name
+     * @param string $name
      */
     protected function addQueryBuilderSort(QueryBuilder $qb, $name)
     {
@@ -220,8 +268,8 @@ class CustomerInvoiceController extends Controller
     /**
      * Create Delete form
      *
-     * @param integer                       $id
-     * @param string                        $route
+     * @param integer $id
+     * @param string $route
      * @return \Symfony\Component\Form\Form
      */
     protected function createDeleteForm($id, $route)
@@ -229,8 +277,7 @@ class CustomerInvoiceController extends Controller
         return $this->createFormBuilder(null, array('attr' => array('id' => 'delete')))
             ->setAction($this->generateUrl($route, array('id' => $id)))
             ->setMethod('DELETE')
-            ->getForm()
-        ;
+            ->getForm();
     }
 
 }

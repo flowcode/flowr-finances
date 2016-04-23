@@ -5,6 +5,7 @@ namespace Flower\FinancesBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\OneToMany;
+use Doctrine\ORM\Mapping\OneToOne;
 use Gedmo\Mapping\Annotation as Gedmo;
 use JMS\Serializer\Annotation\Groups;
 
@@ -29,6 +30,13 @@ class CustomerInvoice
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="\Flower\ModelBundle\Entity\Clients\Account")
+     * @ORM\JoinColumn(name="account", referencedColumnName="id")
+     * @Groups({"public_api"})
+     */
+    private $account;
 
     /**
      * @var \DateTime
@@ -82,6 +90,11 @@ class CustomerInvoice
     private $tax;
 
     /**
+     * @OneToOne(targetEntity="\Flower\ModelBundle\Entity\Sales\Sale", mappedBy="customerInvoice")
+     */
+    private $sale;
+
+    /**
      * @var integer
      *
      * @ORM\Column(name="status", type="integer")
@@ -89,7 +102,7 @@ class CustomerInvoice
     private $status;
 
     /**
-     * @OneToMany(targetEntity="\Flower\FinancesBundle\Entity\CustomerInvoiceItem", mappedBy="customerInvoice")
+     * @OneToMany(targetEntity="\Flower\FinancesBundle\Entity\CustomerInvoiceItem", mappedBy="customerInvoice", cascade={"persist"})
      *
      */
     protected $items;
@@ -326,5 +339,51 @@ class CustomerInvoice
     public function getItems()
     {
         return $this->items;
+    }
+
+    /**
+     * Set sale
+     *
+     * @param \Flower\ModelBundle\Entity\Sales\Sale $sale
+     * @return CustomerInvoice
+     */
+    public function setSale(\Flower\ModelBundle\Entity\Sales\Sale $sale = null)
+    {
+        $this->sale = $sale;
+
+        return $this;
+    }
+
+    /**
+     * Get sale
+     *
+     * @return \Flower\ModelBundle\Entity\Sales\Sale 
+     */
+    public function getSale()
+    {
+        return $this->sale;
+    }
+
+    /**
+     * Set account
+     *
+     * @param \Flower\ModelBundle\Entity\Clients\Account $account
+     * @return CustomerInvoice
+     */
+    public function setAccount(\Flower\ModelBundle\Entity\Clients\Account $account = null)
+    {
+        $this->account = $account;
+
+        return $this;
+    }
+
+    /**
+     * Get account
+     *
+     * @return \Flower\ModelBundle\Entity\Clients\Account 
+     */
+    public function getAccount()
+    {
+        return $this->account;
     }
 }

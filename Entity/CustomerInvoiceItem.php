@@ -25,6 +25,20 @@ class CustomerInvoiceItem
     private $id;
 
     /**
+     * @ORM\ManyToOne(targetEntity="\Flower\ModelBundle\Entity\Stock\Product", cascade={"persist"})
+     * @ORM\JoinColumn(name="product_id", referencedColumnName="id", nullable=true)
+     * @Groups({"public_api"})
+     */
+    protected $product;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="\Flower\ModelBundle\Entity\Stock\Service", cascade={"persist"})
+     * @ORM\JoinColumn(name="service_id", referencedColumnName="id", nullable=true)
+     * @Groups({"public_api"})
+     */
+    protected $service;
+
+    /**
      * @var integer
      *
      * @ORM\Column(name="units", type="integer", nullable=true)
@@ -152,5 +166,51 @@ class CustomerInvoiceItem
     public function getCustomerInvoice()
     {
         return $this->customerInvoice;
+    }
+
+    /**
+     * Set product
+     *
+     * @param \Flower\ModelBundle\Entity\Stock\Product $product
+     * @return CustomerInvoiceItem
+     */
+    public function setProduct(\Flower\ModelBundle\Entity\Stock\Product $product = null)
+    {
+        $this->product = $product;
+
+        return $this;
+    }
+
+    /**
+     * Get product
+     *
+     * @return \Flower\ModelBundle\Entity\Stock\Product 
+     */
+    public function getProduct()
+    {
+        return $this->product;
+    }
+
+    /**
+     * Set service
+     *
+     * @param \Flower\ModelBundle\Entity\Stock\Service $service
+     * @return CustomerInvoiceItem
+     */
+    public function setService(\Flower\ModelBundle\Entity\Stock\Service $service = null)
+    {
+        $this->service = $service;
+
+        return $this;
+    }
+
+    /**
+     * Get service
+     *
+     * @return \Flower\ModelBundle\Entity\Stock\Service 
+     */
+    public function getService()
+    {
+        return $this->service;
     }
 }
