@@ -7,7 +7,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-class CustomerInvoiceType extends AbstractType
+class SupplierInvoiceType extends AbstractType
 {
     /**
      * {@inheritdoc}
@@ -15,8 +15,8 @@ class CustomerInvoiceType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('account', 'genemu_jqueryselect2_entity',
-                array('class' => 'Flower\ModelBundle\Entity\Clients\Account',
+            ->add('supplier', 'genemu_jqueryselect2_entity',
+                array('class' => 'Flower\StockBundle\Entity\Supplier',
                     'property' => 'name',
                     'multiple' => false,
                     'required' => false))

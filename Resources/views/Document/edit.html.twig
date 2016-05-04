@@ -9,9 +9,7 @@
 {% block body %}
     <section class="content-header">
         <h1>
-            <a href="{{ path('finance_document_ci') }}">
-                {{ 'customer_invoices'|trans({}, 'Finance')|title }}
-            </a>
+            <a href="{{ path('finance_document') }}"> {{ '%entity% list'|trans({'%entity%': 'Document'}, 'Document') }}</a>
             /
             {{ 'Document' | trans({}, 'Document') }}
         </h1>

@@ -12,11 +12,55 @@
     </div>
     <ul class="sidebar-menu">
 
-        <li {% if app_sale is defined %}class="active"{% endif %}>
-            <a href="{{ path('finance_customer_invoice') }}">
-                {{ 'customer_invoices'|trans({}, 'Finance')|title }}
+        <li {% if app_dashboard is defined %}class="active"{% endif %}>
+            <a href="{{ path('finance_dashboard') }}">
+                {{ 'dashboard'|trans({}, 'Finance')|title }}
             </a>
         </li>
+
+        <li class="treeview {% if app_incomes is defined %}active{% endif %}">
+            <a href="#">
+                <span>
+                    {{ 'incomes'|trans({}, 'Finance')|title }}
+                </span>
+                <i class="fa fa-angle-left pull-right"></i>
+            </a>
+            <ul class="treeview-menu">
+                <li {% if app_customer_invoices is defined %}class="active"{% endif %}>
+                    <a href="{{ path('finance_document_ci') }}">
+                        {{ 'customer_invoices'|trans({}, 'Finance')|capitalize }}
+                    </a>
+                </li>
+                <li {% if app_income_payment is defined %}class="active"{% endif %}>
+                    <a href="{{ path('finance_payment') }}">
+                        {{ 'payments'|trans({}, 'Finance')|title }}
+                    </a>
+                </li>
+            </ul>
+        </li>
+
+        <li class="treeview {% if app_expenses is defined %}active{% endif %}">
+            <a href="#">
+                <span>
+                    {{ 'expenses'|trans({}, 'Finance')|title }}
+                </span>
+                <i class="fa fa-angle-left pull-right"></i>
+            </a>
+            <ul class="treeview-menu">
+                <li {% if app_supplier_invoices is defined %}class="active"{% endif %}>
+                    <a href="{{ path('finance_document_si') }}">
+                        {{ 'supplier_invoices'|trans({}, 'Finance')|capitalize }}
+                    </a>
+                </li>
+                <li {% if app_expense_payment is defined %}class="active"{% endif %}>
+                    <a href="{{ path('finance_payment') }}">
+                        {{ 'payments'|trans({}, 'Finance')|title }}
+                    </a>
+                </li>
+            </ul>
+        </li>
+
+
         <li {% if app_sale is defined %}class="active"{% endif %}>
             <a href="{{ path('finance_account') }}">
                 {{ 'accounts'|trans({}, 'Finance')|title }}
@@ -32,10 +76,20 @@
                 {{ 'journal_entries'|trans({}, 'Finance')|title }}
             </a>
         </li>
-        <li {% if app_sale is defined %}class="active"{% endif %}>
+        <li class="treeview {% if app_sale is defined %}active{% endif %}">
             <a href="#">
-                {{ 'reports'|trans({}, 'Finance')|title }}
+                <span>
+                    {{ 'reports'|trans({}, 'Finance')|title }}
+                </span>
+                <i class="fa fa-angle-left pull-right"></i>
             </a>
+            <ul class="treeview-menu">
+                <li {% if app_supplier_invoices is defined %}class="active"{% endif %}>
+                    <a href="{{ path('finance_report_general_ledger') }}">
+                        {{ 'general_ledger'|trans({}, 'Finance')|title }}
+                    </a>
+                </li>
+            </ul>
         </li>
 
 

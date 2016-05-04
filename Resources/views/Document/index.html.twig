@@ -22,23 +22,22 @@
 {% from _self import thead %}
 
 {% block app_menu %}
-    {{ include("FlowerFinancesBundle::appnav.html.twig", { 'app_incomes': true, 'app_customer_invoices': true }) }}
+    {{ include("FlowerFinancesBundle::appnav.html.twig", { 'app_document': true }) }}
 {% endblock %}
 
 
 {% block body %}
     <section class="content-header">
         <h1>
-            {{ 'customer_invoices'|trans({}, 'Finance')|title }}
+            {{ '%entity% list'|trans({'%entity%': 'Document'}, 'Document') }}
         </h1>
     </section>
     <section class="content">
         <div class="box">
             <div class="box-header">
-                <div class="box-tools pull-right">
-                    <a class="btn btn-link btn-sm" href={{ path('finance_document_ci_new') }}>
-                        <i class="fa fa-plus"></i>
-                        {{ 'Create a new %entity%'|trans({'%entity%': 'CustomerInvoice'}, 'Finance') }}
+                <div class="box-tools pull-right"><a class="btn btn-link btn-sm"
+                                                     href={{ path('finance_document_new') }}>
+                        <i class="fa fa-plus"></i> {{ 'Create a new %entity%'|trans({'%entity%': 'Document'}, 'Finance') }}
                     </a>
                 </div>
             </div>
@@ -57,7 +56,7 @@
                     {% for document in paginator %}
                         <tr>
                             <td>
-                                <a href="{{ path('finance_document_ci_show', {id: document.id}) }}">{{ document.id }}</a>
+                                <a href="{{ path('finance_document_show', {id: document.id}) }}">{{ document.id }}</a>
                             </td>
                             <td>{{ document.status }}</td>
                             <td>{{ document.account }}</td>

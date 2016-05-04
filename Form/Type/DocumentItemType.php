@@ -6,7 +6,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-class CustomerInvoiceItemType extends AbstractType
+class DocumentItemType extends AbstractType
 {
     /**
      * {@inheritdoc}
@@ -14,12 +14,11 @@ class CustomerInvoiceItemType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-        
+            ->add('product')
+            ->add('service')
             ->add('units')
             ->add('unitPrice')
-            ->add('total')
-            ->add('customerInvoice')
-        ;
+            ->add('total');
     }
 
     /**
@@ -28,8 +27,8 @@ class CustomerInvoiceItemType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'Flower\FinancesBundle\Entity\CustomerInvoiceItem',
-            'translation_domain' => 'CustomerInvoiceItem',
+            'data_class' => 'Flower\FinancesBundle\Entity\DocumentItem',
+            'translation_domain' => 'DocumentItem',
         ));
     }
 
@@ -38,6 +37,6 @@ class CustomerInvoiceItemType extends AbstractType
      */
     public function getName()
     {
-        return 'customerinvoiceitem';
+        return 'documentitem';
     }
 }

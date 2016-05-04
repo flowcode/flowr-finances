@@ -1,0 +1,73 @@
+{% extends "FlowerCoreBundle::layout.html.twig" %}
+
+{% block title %}{{ 'finances'|trans|title }} - {{ parent() }}{% endblock %}
+
+{% block app_menu %}
+    {{ include("FlowerFinancesBundle::appnav.html.twig") }}
+{% endblock %}
+
+{% block body %}
+
+    <section class="content-header">
+        <h1>
+            {{ 'finances'|trans({}, 'Finance')|title }}
+            /
+            {{ 'general_ledger'|trans({}, 'Finance')|title }}
+        </h1>
+    </section>
+    <section class="content">
+        <div class="box">
+            <div class="box-header">
+
+            </div>
+            <div class="box-body">
+
+                <div class="row">
+                    <div class="col-sm-6">
+                        <form class="form-inline">
+                            <input name="from" type="text" value="{{ from|date('d/m/Y') }}" class="form-control">
+                            <input name="to" type="text" value="{{ to|date('d/m/Y') }}" class="form-control">
+                            <button type="submit" class="btn btn-default">Filter</button>
+                        </form>
+                    </div>
+                </div>
+
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>account</th>
+                        <th>debit</th>
+                        <th>credit</th>
+                        <th>net</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for account in accounts %}
+                        <tr>
+                            <td>{{ account.name }}</td>
+                            <td>{{ account.debit }}</td>
+                            <td>{{ account.credit }}</td>
+
+                            <td>
+                                {% set net = account.debit - account.credit %}
+                                {% if (account.type == 1 or account.type == 5) and net > 0 %}
+                                    {{ net }}
+                                {% elseif (account.type == 3 ) and net < 0 %}
+                                    {{ (net * (-1)) }}
+                                {% else %}
+                                    ({{ (net * (-1)) }})
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+
+            </div>
+
+        </div>
+
+
+    </section>
+
+{% endblock %}

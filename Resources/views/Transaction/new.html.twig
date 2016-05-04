@@ -2,6 +2,10 @@
 
 {% block title %}{{ '%entity% creation'|trans({'%entity%': 'Transaction'}, 'Transaction') }} - {{ parent() }}{% endblock %}
 
+{% block app_menu %}
+    {{ include("FlowerFinancesBundle::appnav.html.twig", { 'app_transaction': true }) }}
+{% endblock %}
+
 {% block body %}
     <section class="content-header">
         <h1>
@@ -18,22 +22,64 @@
                 {{ form_row(form.description) }}
                 {{ form_row(form.date) }}
 
-                <h3>Journal Entries</h3>
-                <table class="table table-condensed">
-                    <tbody class="journal-entries"
-                           data-prototype="{{ form_widget(form.journalEntries.vars.prototype)|e }}">
-                    {% for entry in form.journalEntries %}
-                        <tr>
-                            <td>{{ form_row(entry.account) }}</td>
-                            <td>{{ form_row(entry.debit) }}</td>
-                            <td>{{ form_row(entry.credit) }}</td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-                <p>
-                    <button class="btn-default btn" type="submit">{{ 'save'|trans | capitalize }}</button>
-                </p>
+                <div class="form-group">
+
+                    {{ form_label(form.journalEntries) }}
+
+                    <div class="col-sm-10">
+                        <div class="raw-materials" id="contentMaterials">
+                            {% for entry in form.journalEntries %}
+                                <div class="form-group raw-materials">
+                                    <div class="col-sm-3">
+                                        {{ form_widget(entry.account) }}
+                                    </div>
+                                    <div class="col-sm-3">
+                                        {{ form_widget(entry.debit) }}
+                                    </div>
+                                    <div class="col-sm-3">
+                                        {{ form_widget(entry.credit) }}
+                                    </div>
+                                    <div class="col-sm-3">
+                                        {{ form_widget(entry.date) }}
+                                    </div>
+                                    <div class="col-sm-1">
+                                        <button>
+                                            <i class="fa fa-close"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="hidden" id="productRawMaterialTemplate">
+                    <div class="form-group reminders">
+                        <div class="col-sm-3 field"
+                             data-prototype="{{ form_widget(form.journalEntries.vars.prototype.account)|e }}">
+                        </div>
+                        <div class="col-sm-2 field"
+                             data-prototype="{{ form_widget(form.journalEntries.vars.prototype.debit)|e }}">
+
+                        </div>
+                        <div class="col-sm-2 field"
+                             data-prototype="{{ form_widget(form.journalEntries.vars.prototype.credit)|e }}">
+                        </div>
+                        <div class="col-sm-3 field"
+                             data-prototype="{{ form_widget(form.journalEntries.vars.prototype.date)|e }}">
+                        </div>
+                        <div class="col-sm-2 tools">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-sm-8 col-sm-offset-2">
+                        <button class="btn btn-success" type="submit">
+                            {{ 'save'|trans | capitalize }}
+                        </button>
+                    </div>
+                </div>
                 {{ form_end(form) }}
             </div>
             <div class="box-footer">
@@ -46,48 +92,8 @@
 {% block javascripts %}
     {{ parent() }}
     <script>
-        var $collectionHolder;
-
-        // setup an "add a tag" link
-        var $addTagLink = $('<a href="#" class="add_tag_link">Add Journal entry</a>');
-        var $newLinkLi = $('<li></li>').append($addTagLink);
-        function addTagForm($collectionHolder, $newLinkLi) {
-            // Get the data-prototype explained earlier
-            var prototype = $collectionHolder.data('prototype');
-
-            // get the new index
-            var index = $collectionHolder.data('index');
-
-            // Replace '__name__' in the prototype's HTML to
-            // instead be a number based on how many items we have
-            var newForm = prototype.replace(/__name__/g, index);
-
-            // increase the index with one for the next item
-            $collectionHolder.data('index', index + 1);
-
-            // Display the form in the page in an li, before the "Add a tag" link li
-            var $newFormLi = $('<tr></tr>').append(newForm);
-            $newLinkLi.before($newFormLi);
-        }
-        jQuery(document).ready(function () {
-            // Get the ul that holds the collection of tags
-            $collectionHolder = $('tbody.journal-entries');
-
-            // add the "add a tag" anchor and li to the tags ul
-            $collectionHolder.append($newLinkLi);
-
-            // count the current form inputs we have (e.g. 2), use that as the new
-            // index when inserting a new item (e.g. 2)
-            $collectionHolder.data('index', $collectionHolder.find(':input').length);
-
-            $addTagLink.on('click', function (e) {
-                // prevent the link from creating a "#" on the URL
-                e.preventDefault();
-
-                // add a new tag form (see next code block)
-                addTagForm($collectionHolder, $newLinkLi);
-            });
-        });
+        var tagARemove = '<button href="#" class="btn btn-link btn-sm">{{ "remove" | trans({}, "Finance") }}</button>'
+        var tagAAddOther = '<div class="col-sm-2 col-xs-offset-2"><button href="#" class="btn btn-default btn-xs add_tag_link">{{ "add_journal_entries" | trans({}, "Finance") }}</button></div>'
     </script>
-
+    <script src="{{ asset('bundles/flowerfinances/js/transactionItems.js') }}"></script>
 {% endblock %}

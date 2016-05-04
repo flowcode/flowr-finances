@@ -2,11 +2,12 @@
 
 namespace Flower\FinancesBundle\Form\Type;
 
+use Flower\FinancesBundle\Entity\Payment;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-class TransactionType extends AbstractType
+class PaymentType extends AbstractType
 {
     /**
      * {@inheritdoc}
@@ -14,15 +15,17 @@ class TransactionType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('description', null, array(
-                'required' => true,
+            ->add('type', 'choice', array(
+                'choices' => array(
+                    Payment::TYPE_INCOME => Payment::TYPE_INCOME,
+                    Payment::TYPE_EXPENSE => Payment::TYPE_EXPENSE,
+                )
             ))
-            ->add('date')
-            ->add('journalEntries', 'collection', array(
-                'type' => new JournalEntryType(),
-                'allow_add' => true,
-                'by_reference' => false,
-            ));
+            ->add('name')
+            ->add('description')
+            ->add('amount')
+            ->add('created')
+            ->add('documents');
     }
 
     /**
@@ -31,8 +34,8 @@ class TransactionType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'Flower\FinancesBundle\Entity\Transaction',
-            'translation_domain' => 'Finance',
+            'data_class' => 'Flower\FinancesBundle\Entity\Payment',
+            'translation_domain' => 'Payment',
         ));
     }
 
@@ -41,6 +44,6 @@ class TransactionType extends AbstractType
      */
     public function getName()
     {
-        return 'transaction';
+        return 'payment';
     }
 }

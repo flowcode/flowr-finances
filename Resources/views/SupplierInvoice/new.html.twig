@@ -1,42 +1,58 @@
 {% extends "FlowerCoreBundle::layout.html.twig" %}
 
-{% block title %}{{ '%entity% edit'|trans({'%entity%': 'Transaction'}, 'Transaction') }} - {{ parent() }}{% endblock %}
+{% block title %}{{ '%entity% creation'|trans({'%entity%': 'Document'}, 'Document') }} - {{ parent() }}{% endblock %}
+
+{% block app_menu %}
+    {{ include("FlowerFinancesBundle::appnav.html.twig", { 'app_document': true }) }}
+{% endblock %}
 
 {% block body %}
     <section class="content-header">
         <h1>
-            <a href="{{ path('finance_transaction') }}"> {{ '%entity% list'|trans({'%entity%': 'Transaction'}, 'Transaction') }}</a>
+            <a href="{{ path('finance_document_ci') }}">
+                {{ 'supplier_invoices'|trans({}, 'Finance')|title }}
+            </a>
             /
-            {{ 'Transaction' | trans({}, 'Transaction') }}
+            {{ 'Document' | trans({}, 'Document') }}
         </h1>
+
     </section>
     <section class="content">
         <div class="box">
             <div class="box-body">
-                {{ form_start(form) }}
+                {{ form_start(form, {action: path('finance_document_si_create')}) }}
 
-                {{ form_row(form.description) }}
-                {{ form_row(form.date) }}
+                {{ form_row(form.supplier) }}
+                {{ form_row(form.total) }}
+                {{ form_row(form.totalWithTax) }}
+                {{ form_row(form.discount) }}
+                {{ form_row(form.totalDiscount) }}
+                {{ form_row(form.tax) }}
+                {{ form_row(form.status) }}
+
 
                 <div class="form-group">
 
-                    {{ form_label(form.journalEntries) }}
+                    {{ form_label(form.items) }}
 
                     <div class="col-sm-10">
                         <div class="raw-materials" id="contentMaterials">
-                            {% for entry in form.journalEntries %}
+                            {% for entry in form.items %}
                                 <div class="form-group raw-materials">
                                     <div class="col-sm-3">
-                                        {{ form_widget(entry.account) }}
+                                        {{ form_widget(entry.product) }}
                                     </div>
                                     <div class="col-sm-3">
-                                        {{ form_widget(entry.debit) }}
+                                        {{ form_widget(entry.service) }}
                                     </div>
-                                    <div class="col-sm-3">
-                                        {{ form_widget(entry.credit) }}
+                                    <div class="col-sm-1">
+                                        {{ form_widget(entry.units) }}
                                     </div>
-                                    <div class="col-sm-3">
-                                        {{ form_widget(entry.date) }}
+                                    <div class="col-sm-2">
+                                        {{ form_widget(entry.unitPrice) }}
+                                    </div>
+                                    <div class="col-sm-2">
+                                        {{ form_widget(entry.total) }}
                                     </div>
                                     <div class="col-sm-1">
                                         <button>
@@ -49,6 +65,7 @@
                     </div>
                 </div>
 
+
                 <div class="form-group">
                     <div class="col-sm-8 col-sm-offset-2">
                         <button class="btn btn-success" type="submit">
@@ -57,23 +74,24 @@
                     </div>
                 </div>
 
-
                 <div class="hidden" id="productRawMaterialTemplate">
                     <div class="form-group reminders">
                         <div class="col-sm-3 field"
-                             data-prototype="{{ form_widget(form.journalEntries.vars.prototype.account)|e }}">
-                        </div>
-                        <div class="col-sm-2 field"
-                             data-prototype="{{ form_widget(form.journalEntries.vars.prototype.debit)|e }}">
-
-                        </div>
-                        <div class="col-sm-2 field"
-                             data-prototype="{{ form_widget(form.journalEntries.vars.prototype.credit)|e }}">
+                             data-prototype="{{ form_widget(form.items.vars.prototype.product)|e }}">
                         </div>
                         <div class="col-sm-3 field"
-                             data-prototype="{{ form_widget(form.journalEntries.vars.prototype.date)|e }}">
+                             data-prototype="{{ form_widget(form.items.vars.prototype.service)|e }}">
                         </div>
-                        <div class="col-sm-2 tools">
+                        <div class="col-sm-1 field"
+                             data-prototype="{{ form_widget(form.items.vars.prototype.units)|e }}">
+                        </div>
+                        <div class="col-sm-2 field"
+                             data-prototype="{{ form_widget(form.items.vars.prototype.unitPrice)|e }}">
+                        </div>
+                        <div class="col-sm-2 field"
+                             data-prototype="{{ form_widget(form.items.vars.prototype.total)|e }}">
+                        </div>
+                        <div class="col-sm-1 tools">
                         </div>
                     </div>
                 </div>
@@ -81,20 +99,8 @@
                 {{ form_end(form) }}
             </div>
             <div class="box-footer">
-
-                {{ form_start(delete_form) }}
-                {{ form_widget(delete_form) }}
-
-                <div class="btn-group record_actions">
-                    <button class="btn btn-link btn-sm" type="submit"> {{ 'Delete'|trans({}, 'Transaction') }}</button>
-                    <input name="modal" type="hidden" value="0">
-
-                </div>
-                <input name="modal" type="hidden" value="0">
-                {{ form_end(delete_form) }}
-
+                <div class="btn-group record_actions"></div>
             </div>
-
         </div>
     </section>
 {% endblock %}
@@ -105,5 +111,5 @@
         var tagARemove = '<button href="#" class="btn btn-link btn-sm">{{ "remove" | trans({}, "Finance") }}</button>'
         var tagAAddOther = '<div class="col-sm-2 col-xs-offset-2"><button href="#" class="btn btn-default btn-xs add_tag_link">{{ "add_journal_entries" | trans({}, "Finance") }}</button></div>'
     </script>
-    <script src="{{ asset('bundles/flowerfinances/js/transactionItems.js') }}"></script>
+    <script src="{{ asset('bundles/flowerfinances/js/customerInvoiceItems.js') }}"></script>
 {% endblock %}

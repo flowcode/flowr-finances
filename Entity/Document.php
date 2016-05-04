@@ -5,22 +5,28 @@ namespace Flower\FinancesBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\OneToMany;
+use Doctrine\ORM\Mapping\ManyToMany;
+use Doctrine\ORM\Mapping\JoinTable;
 use Doctrine\ORM\Mapping\OneToOne;
 use Gedmo\Mapping\Annotation as Gedmo;
 use JMS\Serializer\Annotation\Groups;
 
 /**
- * CustomerInvoice
+ * Document
  *
- * @ORM\Table(name="finance_customer_invoice")
- * @ORM\Entity(repositoryClass="Flower\FinancesBundle\Repository\CustomerInvoiceRepository")
+ * @ORM\Table(name="finance_document")
+ * @ORM\Entity(repositoryClass="Flower\FinancesBundle\Repository\DocumentRepository")
  */
-class CustomerInvoice
+class Document
 {
 
-    const STATUS_DRAFT = 0;
-    const STATUS_PENDING = 1;
-    const STATUS_PAID = 2;
+    const SUBTYPE_INVOICE_A = 'a';
+    const SUBTYPE_INVOICE_B = 'b';
+    const SUBTYPE_INVOICE_C = 'c';
+
+    const STATUS_DRAFT = 'status_draft';
+    const STATUS_PENDING = 'status_pending';
+    const STATUS_PAID = 'status_paid';
 
     /**
      * @var integer
@@ -32,11 +38,37 @@ class CustomerInvoice
     private $id;
 
     /**
+     * @ORM\ManyToOne(targetEntity="\Flower\FinancesBundle\Entity\DocumentType")
+     * @ORM\JoinColumn(name="document_type_id", referencedColumnName="id")
+     * @Groups({"public_api"})
+     */
+    private $type;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="subtype", type="string", length=255, nullable=true)
+     */
+    private $subtype;
+
+    /**
+     * @ManyToMany(targetEntity="\Flower\FinancesBundle\Entity\Payment", mappedBy="documents")
+     */
+    private $payments;
+
+    /**
      * @ORM\ManyToOne(targetEntity="\Flower\ModelBundle\Entity\Clients\Account")
      * @ORM\JoinColumn(name="account", referencedColumnName="id")
      * @Groups({"public_api"})
      */
     private $account;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="\Flower\StockBundle\Entity\Supplier")
+     * @ORM\JoinColumn(name="supplier_id", referencedColumnName="id")
+     * @Groups({"public_api"})
+     */
+    private $supplier;
 
     /**
      * @var \DateTime
@@ -90,19 +122,19 @@ class CustomerInvoice
     private $tax;
 
     /**
-     * @OneToOne(targetEntity="\Flower\ModelBundle\Entity\Sales\Sale", mappedBy="customerInvoice")
+     * @OneToOne(targetEntity="\Flower\ModelBundle\Entity\Sales\Sale", mappedBy="document")
      */
     private $sale;
 
     /**
-     * @var integer
+     * @var string
      *
-     * @ORM\Column(name="status", type="integer")
+     * @ORM\Column(name="status", type="string", length=255)
      */
     private $status;
 
     /**
-     * @OneToMany(targetEntity="\Flower\FinancesBundle\Entity\CustomerInvoiceItem", mappedBy="customerInvoice", cascade={"persist"})
+     * @OneToMany(targetEntity="\Flower\FinancesBundle\Entity\DocumentItem", mappedBy="document", cascade={"persist"})
      *
      */
     protected $items;
@@ -111,6 +143,7 @@ class CustomerInvoice
     {
         $this->status = self::STATUS_DRAFT;
         $this->items = new ArrayCollection();
+        $this->payments = new ArrayCollection();
     }
 
 
@@ -128,7 +161,7 @@ class CustomerInvoice
      * Set created
      *
      * @param \DateTime $created
-     * @return CustomerInvoice
+     * @return Document
      */
     public function setCreated($created)
     {
@@ -151,7 +184,7 @@ class CustomerInvoice
      * Set updated
      *
      * @param \DateTime $updated
-     * @return CustomerInvoice
+     * @return Document
      */
     public function setUpdated($updated)
     {
@@ -174,7 +207,7 @@ class CustomerInvoice
      * Set total
      *
      * @param float $total
-     * @return CustomerInvoice
+     * @return Document
      */
     public function setTotal($total)
     {
@@ -197,7 +230,7 @@ class CustomerInvoice
      * Set totalWithTax
      *
      * @param float $totalWithTax
-     * @return CustomerInvoice
+     * @return Document
      */
     public function setTotalWithTax($totalWithTax)
     {
@@ -220,7 +253,7 @@ class CustomerInvoice
      * Set discount
      *
      * @param float $discount
-     * @return CustomerInvoice
+     * @return Document
      */
     public function setDiscount($discount)
     {
@@ -243,7 +276,7 @@ class CustomerInvoice
      * Set totalDiscount
      *
      * @param float $totalDiscount
-     * @return CustomerInvoice
+     * @return Document
      */
     public function setTotalDiscount($totalDiscount)
     {
@@ -266,7 +299,7 @@ class CustomerInvoice
      * Set tax
      *
      * @param float $tax
-     * @return CustomerInvoice
+     * @return Document
      */
     public function setTax($tax)
     {
@@ -288,8 +321,8 @@ class CustomerInvoice
     /**
      * Set status
      *
-     * @param integer $status
-     * @return CustomerInvoice
+     * @param string $status
+     * @return Document
      */
     public function setStatus($status)
     {
@@ -301,7 +334,7 @@ class CustomerInvoice
     /**
      * Get status
      *
-     * @return integer
+     * @return string
      */
     public function getStatus()
     {
@@ -311,10 +344,10 @@ class CustomerInvoice
     /**
      * Add items
      *
-     * @param \Flower\FinancesBundle\Entity\CustomerInvoiceItem $items
-     * @return CustomerInvoice
+     * @param \Flower\FinancesBundle\Entity\DocumentItem $items
+     * @return Document
      */
-    public function addItem(\Flower\FinancesBundle\Entity\CustomerInvoiceItem $items)
+    public function addItem(\Flower\FinancesBundle\Entity\DocumentItem $items)
     {
         $this->items[] = $items;
 
@@ -324,9 +357,9 @@ class CustomerInvoice
     /**
      * Remove items
      *
-     * @param \Flower\FinancesBundle\Entity\CustomerInvoiceItem $items
+     * @param \Flower\FinancesBundle\Entity\DocumentItem $items
      */
-    public function removeItem(\Flower\FinancesBundle\Entity\CustomerInvoiceItem $items)
+    public function removeItem(\Flower\FinancesBundle\Entity\DocumentItem $items)
     {
         $this->items->removeElement($items);
     }
@@ -334,7 +367,7 @@ class CustomerInvoice
     /**
      * Get items
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getItems()
     {
@@ -345,7 +378,7 @@ class CustomerInvoice
      * Set sale
      *
      * @param \Flower\ModelBundle\Entity\Sales\Sale $sale
-     * @return CustomerInvoice
+     * @return Document
      */
     public function setSale(\Flower\ModelBundle\Entity\Sales\Sale $sale = null)
     {
@@ -357,7 +390,7 @@ class CustomerInvoice
     /**
      * Get sale
      *
-     * @return \Flower\ModelBundle\Entity\Sales\Sale 
+     * @return \Flower\ModelBundle\Entity\Sales\Sale
      */
     public function getSale()
     {
@@ -368,7 +401,7 @@ class CustomerInvoice
      * Set account
      *
      * @param \Flower\ModelBundle\Entity\Clients\Account $account
-     * @return CustomerInvoice
+     * @return Document
      */
     public function setAccount(\Flower\ModelBundle\Entity\Clients\Account $account = null)
     {
@@ -380,10 +413,113 @@ class CustomerInvoice
     /**
      * Get account
      *
-     * @return \Flower\ModelBundle\Entity\Clients\Account 
+     * @return \Flower\ModelBundle\Entity\Clients\Account
      */
     public function getAccount()
     {
         return $this->account;
     }
+
+    /**
+     * Set type
+     *
+     * @param string $type
+     * @return Document
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
+    /**
+     * Get type
+     *
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * Add payments
+     *
+     * @param \Flower\FinancesBundle\Entity\Payment $payment
+     * @return Document
+     */
+    public function addPayment(\Flower\FinancesBundle\Entity\Payment $payment)
+    {
+        $this->payments[] = $payment;
+
+        return $this;
+    }
+
+    /**
+     * Remove payments
+     *
+     * @param \Flower\FinancesBundle\Entity\Payment $payment
+     */
+    public function removePayment(\Flower\FinancesBundle\Entity\Payment $payment)
+    {
+        $this->payments->removeElement($payment);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSubtype()
+    {
+        return $this->subtype;
+    }
+
+    /**
+     * @param mixed $subtype
+     */
+    public function setSubtype($subtype)
+    {
+        $this->subtype = $subtype;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSupplier()
+    {
+        return $this->supplier;
+    }
+
+    /**
+     * @param mixed $supplier
+     */
+    public function setSupplier($supplier)
+    {
+        $this->supplier = $supplier;
+    }
+
+
+    /**
+     * Get payments
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPayments()
+    {
+        return $this->payments;
+    }
+
+    function __toString()
+    {
+        $name = $this->getId();
+        if ($this->getAccount()) {
+            $name .= " " . $this->getAccount()->getName();
+        }
+        if ($this->getSupplier()) {
+            $name .= " " . $this->getSupplier()->getName();
+        }
+        return $name;
+    }
+
+
 }

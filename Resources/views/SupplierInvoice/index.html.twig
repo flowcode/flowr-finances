@@ -22,21 +22,21 @@
 {% from _self import thead %}
 
 {% block app_menu %}
-    {{ include("FlowerFinancesBundle::appnav.html.twig", { 'app_incomes': true, 'app_customer_invoices': true }) }}
+    {{ include("FlowerFinancesBundle::appnav.html.twig", { 'app_document': true }) }}
 {% endblock %}
 
 
 {% block body %}
     <section class="content-header">
         <h1>
-            {{ 'customer_invoices'|trans({}, 'Finance')|title }}
+            {{ 'supplier_invoices'|trans({}, 'Finance')|title }}
         </h1>
     </section>
     <section class="content">
         <div class="box">
             <div class="box-header">
                 <div class="box-tools pull-right">
-                    <a class="btn btn-link btn-sm" href={{ path('finance_document_ci_new') }}>
+                    <a class="btn btn-link btn-sm" href={{ path('finance_document_si_new') }}>
                         <i class="fa fa-plus"></i>
                         {{ 'Create a new %entity%'|trans({'%entity%': 'CustomerInvoice'}, 'Finance') }}
                     </a>
@@ -48,7 +48,7 @@
                     <tr>
                         <th scope="col">{{ thead('document', 'id', 'Id') }}</th>
                         <th scope="col">{{ thead('document', 'status', 'Status') }}</th>
-                        <th scope="col">{{ thead('document', 'account', 'Account') }}</th>
+                        <th scope="col">{{ thead('document', 'supplier', 'Supplier') }}</th>
                         <th scope="col">{{ thead('document', 'total', 'Total') }}</th>
                         <th scope="col">{{ thead('document', 'date', 'Date') }}</th>
                     </tr>
@@ -57,10 +57,10 @@
                     {% for document in paginator %}
                         <tr>
                             <td>
-                                <a href="{{ path('finance_document_ci_show', {id: document.id}) }}">{{ document.id }}</a>
+                                <a href="{{ path('finance_document_si_show', {id: document.id}) }}">{{ document.id }}</a>
                             </td>
                             <td>{{ document.status }}</td>
-                            <td>{{ document.account }}</td>
+                            <td>{{ document.supplier }}</td>
                             <td>{{ document.total }}</td>
                             <td>{{ document.created|date('Y-m-d') }}</td>
                         </tr>

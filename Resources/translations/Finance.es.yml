@@ -1,4 +1,11 @@
 
+remove: quitar
+created: creado
+Created: Creado
+updated: actualizado
+Updated: Actualizado
+Create a new %entity%: Crear %entity%
+
 #accounts
 accounts: cuentas
 account: cuenta
@@ -9,13 +16,53 @@ account_type_expense: egresos
 account_type_liability: pasivo
 account_type_equity: equidad
 
-#customer invoices
-customer_invoices: facturas
+
+
+#documents
+customer_invoices: facturas a clientes
+supplier_invoices: facturas de proveedores
+
+customer_invoice: factura de cliente
+customer_debit_note: nota de débito de cliente
+customer_credit_note: nota de crédito de cliente
+supplier_invoice: factura de proveedor
+supplier_debit_note: nota de débito de proveedor
+supplier_credit_note: nota de crédito de proveedor
+
+status_draft: borrador
+status_pending: pendiente
+status_paid: pagado
+
+Document: Documento
+CustomerInvoice list: facturas
+
+Account: Cliente
+Total: Total
+Total with tax: Total con impuestos
+Discount: Descuento
+Total discount: Total con descuento
+Tax: Impuesto
+Status: Estado
+Items: Descripción
+
+STATUS_DRAFT: Borrador
+STATUS_PENDING: Pendiente de pago
+STATUS_PAID: Pagada
 
 #transactions
+transacion: transacción
 transactions: transacciones
+Description: Descripción
+Journal entries: Entradas del Diario
+Date: Fecha
 
 #journal entries
 journal_entries: libro diario
+add_journal_entries: agregar entrada
 
 reports: reportes
+general_ledger: libro mayor
+income: ganancia
+incomes: ingresos
+expense: egreso
+expenses: egresos

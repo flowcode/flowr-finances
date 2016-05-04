@@ -1,0 +1,86 @@
+{% extends "FlowerCoreBundle::layout.html.twig" %}
+
+{% block title %}{{ '%entity% list'|trans({'%entity%': 'Payment'}, 'Payment') }} - {{ parent() }}{% endblock %}
+{% macro thead(name, field, label) %}
+    {% spaceless %}
+        {% set sort = app.session.get('sort.' ~ name) %}
+        {% if sort and sort.field == field %}
+            {% if sort.type == 'DESC' %}
+                <a href="{{ path('finance_payment_sort', {field: field, type: 'ASC'}) }}">{{ label | trans({},'Payment') }}
+                    <i class="fa fa-sort-down"></i></a>
+            {% elseif sort.type == 'ASC' %}
+                <a href="{{ path('finance_payment_sort', {field: field, type: 'DESC'}) }}">{{ label | trans({},'Payment') }}
+                    <i class="fa fa-sort-up"></i></a>
+            {% endif %}
+        {% else %}
+            <a href="{{ path('finance_payment_sort', {field: field, type: 'ASC'}) }}">{{ label | trans({},'Payment') }}
+                <i class="fa fa-sort"></i></a>
+        {% endif %}
+    {% endspaceless %}
+{% endmacro %}
+
+{% from _self import thead %}
+
+{% block app_menu %}
+    {{ include("FlowerFinancesBundle::appnav.html.twig", { 'app_payment': true }) }}
+{% endblock %}
+
+{% block body %}
+    <section class="content-header">
+        <h1>
+            {{ '%entity% list'|trans({'%entity%': 'Payment'}, 'Payment') }}
+        </h1>
+    </section>
+    <section class="content">
+        <div class="box">
+            <div class="box-header">
+                <div class="box-tools pull-right"><a class="btn btn-link btn-sm" href={{ path('finance_payment_new') }}>
+                        <i class="fa fa-plus"></i> {{ 'Create a new %entity%'|trans({'%entity%': 'Payment'}, 'Payment') }}
+                    </a>
+                </div>
+            </div>
+            <div class="box-body">
+                <table class="table table-hover records_list table-condensed">
+                    <thead>
+                    <tr>
+                        <th scope="col">{{ thead('payment', 'id', 'Id') }}</th>
+                        <th scope="col">{{ thead('payment', 'type', 'Type') }}</th>
+                        <th scope="col">{{ thead('payment', 'name', 'Name') }}</th>
+                        <th scope="col">{{ thead('payment', 'description', 'Description') }}</th>
+                        <th scope="col">{{ thead('payment', 'amount', 'Amount') }}</th>
+                        <th scope="col">{{ thead('payment', 'created', 'Created') }}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for payment in paginator %}
+                        <tr>
+                            <td>
+                                <a href="{{ path('finance_payment_show', {id: payment.id}) }}">
+                                    {{ payment.id }}
+                                </a>
+                            </td>
+                            <td>
+                                {{ payment.type }}
+                            </td>
+                            <td>
+                                <a href="{{ path('finance_payment_show', {id: payment.id}) }}">
+                                    {{ payment.name }}
+                                </a>
+                            </td>
+                            <td>{{ payment.description }}</td>
+                            <td>{{ payment.amount|number_format(2, '.', ',') }}</td>
+                            <td>{% if payment.created %}{{ payment.created|date('Y-m-d H:i:s') }}{% endif %}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+
+                {{ knp_pagination_render(paginator) }}
+            </div>
+            <div class="box-footer">
+
+            </div>
+
+    </section>
+
+{% endblock %}

@@ -8,6 +8,7 @@ use Flower\FinancesBundle\Entity\JournalEntry;
 use Flower\FinancesBundle\Entity\Payment;
 use Flower\FinancesBundle\Entity\Transaction;
 use Flower\FinancesBundle\Form\Type\CustomerInvoiceType;
+use Flower\FinancesBundle\Form\Type\SupplierInvoiceType;
 use Flower\ModelBundle\Entity\Sales\Sale;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -21,14 +22,14 @@ use Doctrine\ORM\QueryBuilder;
 /**
  * Document controller.
  *
- * @Route("/finance/document/ci")
+ * @Route("/finance/document/si")
  */
-class CustomerInvoiceController extends Controller
+class SupplierInvoiceController extends Controller
 {
     /**
      * Lists all Document entities.
      *
-     * @Route("/", name="finance_document_ci")
+     * @Route("/", name="finance_document_si")
      * @Method("GET")
      * @Template()
      */
@@ -37,7 +38,7 @@ class CustomerInvoiceController extends Controller
         $em = $this->getDoctrine()->getManager();
         $qb = $em->getRepository('FlowerFinancesBundle:Document')->createQueryBuilder('c');
         $qb->leftJoin('c.type', 't');
-        $qb->where('t.name = :type')->setParameter('type', \Flower\FinancesBundle\Entity\DocumentType::TYPE_CUSTOMER_INVOICE);
+        $qb->where('t.name = :type')->setParameter('type', \Flower\FinancesBundle\Entity\DocumentType::TYPE_SUPPLIER_INVOICE);
         $this->addQueryBuilderSort($qb, 'document');
         $paginator = $this->get('knp_paginator')->paginate($qb, $request->query->get('page', 1), 20);
 
@@ -49,17 +50,17 @@ class CustomerInvoiceController extends Controller
     /**
      * Finds and displays a Document entity.
      *
-     * @Route("/{id}/show", name="finance_document_ci_show", requirements={"id"="\d+"})
+     * @Route("/{id}/show", name="finance_document_si_show", requirements={"id"="\d+"})
      * @Method("GET")
      * @Template()
      */
     public function showAction(Document $document)
     {
         $editForm = $this->createForm(new DocumentType(), $document, array(
-            'action' => $this->generateUrl('finance_document_ci_update', array('id' => $document->getid())),
+            'action' => $this->generateUrl('finance_document_si_update', array('id' => $document->getid())),
             'method' => 'PUT',
         ));
-        $deleteForm = $this->createDeleteForm($document->getId(), 'finance_document_ci_delete');
+        $deleteForm = $this->createDeleteForm($document->getId(), 'finance_document_si_delete');
 
         return array(
 
@@ -73,7 +74,7 @@ class CustomerInvoiceController extends Controller
     /**
      * Displays a form to create a new Document entity.
      *
-     * @Route("/new", name="finance_document_ci_new")
+     * @Route("/new", name="finance_document_si_new")
      * @Method("GET")
      * @Template()
      */
@@ -81,11 +82,11 @@ class CustomerInvoiceController extends Controller
     {
         $document = new Document();
         $type = $this->getDoctrine()->getManager()->getRepository('FlowerFinancesBundle:DocumentType')->findOneBy(array(
-            'name' => \Flower\FinancesBundle\Entity\DocumentType::TYPE_CUSTOMER_INVOICE
+            'name' => \Flower\FinancesBundle\Entity\DocumentType::TYPE_SUPPLIER_INVOICE
         ));
         $document->setType($type);
 
-        $form = $this->createForm(new CustomerInvoiceType(), $document);
+        $form = $this->createForm(new SupplierInvoiceType(), $document);
 
         return array(
             'document' => $document,
@@ -93,68 +94,22 @@ class CustomerInvoiceController extends Controller
         );
     }
 
-
     /**
      * Creates a new Document entity.
      *
-     * @Route("/create/sale/{id}", name="finance_document_ci_create_from_sale")
-     * @Method("GET")
-     * @Template("FlowerFinancesBundle:Document:new.html.twig")
-     */
-    public function createFromSaleAction(Request $request, Sale $sale)
-    {
-        $document = new Document();
-
-        $document->setAccount($sale->getAccount());
-        $document->setDiscount($sale->getDiscount());
-        $document->setTax($sale->getTax());
-        $document->setTotal($sale->getTotal());
-        $document->setTotalDiscount($sale->getTotalDiscount());
-        $document->setTotalWithTax($sale->getTotalWithTax());
-        $document->setType(Document::TYPE_CUSTOMER_INVOICE);
-        $document->setSale($sale);
-
-        foreach ($sale->getSaleItems() as $saleItem) {
-            $invoiceItem = new DocumentItem();
-
-            $invoiceItem->setProduct($saleItem->getProduct());
-            $invoiceItem->setService($saleItem->getService());
-            $invoiceItem->setTotal($saleItem->getTotal());
-            $invoiceItem->setDocument($document);
-            $invoiceItem->setUnitPrice($saleItem->getUnitPrice());
-            $invoiceItem->setUnits($saleItem->getUnits());
-
-            $document->addItem($invoiceItem);
-
-        }
-
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($document);
-        $em->flush();
-
-        $sale->setDocument($document);
-        $em->flush();
-
-        return $this->redirect($this->generateUrl('finance_document_ci_show', array('id' => $document->getId())));
-
-    }
-
-    /**
-     * Creates a new Document entity.
-     *
-     * @Route("/create", name="finance_document_ci_create")
+     * @Route("/create", name="finance_document_si_create")
      * @Method("POST")
-     * @Template("FlowerFinancesBundle:CustomerInvoice:new.html.twig")
+     * @Template("FlowerFinancesBundle:SupplierInvoice:new.html.twig")
      */
     public function createAction(Request $request)
     {
         $document = new Document();
         $type = $this->getDoctrine()->getManager()->getRepository('FlowerFinancesBundle:DocumentType')->findOneBy(array(
-            'name' => \Flower\FinancesBundle\Entity\DocumentType::TYPE_CUSTOMER_INVOICE
+            'name' => \Flower\FinancesBundle\Entity\DocumentType::TYPE_SUPPLIER_INVOICE
         ));
         $document->setType($type);
 
-        $form = $this->createForm(new CustomerInvoiceType(), $document);
+        $form = $this->createForm(new SupplierInvoiceType(), $document);
 
         if ($form->handleRequest($request)->isValid()) {
             $em = $this->getDoctrine()->getManager();
@@ -169,31 +124,31 @@ class CustomerInvoiceController extends Controller
 
             /* financial transaction */
             $transacion = new Transaction();
-            $transacion->setDescription('Customer Invoice' . $document->getId() . ' for' . $document->getAccount()->getName());
+            $transacion->setDescription('Supplier Invoice' . $document->getId() . ' for' . $document->getSupplier()->getName());
             $transacion->setDate(new \DateTime());
 
-            $journalEntryReceivable = new JournalEntry();
-            $receivableAccount = $em->getRepository('FlowerFinancesBundle:Account')->findOneBy(array(
-                'subtype' => Account::SUBTYPE_ASSET_RECEIVABLE,
+            $journalEntryPayable = new JournalEntry();
+            $payableAccount = $em->getRepository('FlowerFinancesBundle:Account')->findOneBy(array(
+                'subtype' => Account::SUBTYPE_LIABILITY_PAYABLE,
             ));
-            $journalEntryReceivable->setAccount($receivableAccount);
-            $journalEntryReceivable->setTransaction($transacion);
-            $journalEntryReceivable->setCredit($document->getTotal());
-            $journalEntryReceivable->setDate(new \DateTime());
+            $journalEntryPayable->setAccount($payableAccount);
+            $journalEntryPayable->setTransaction($transacion);
+            $journalEntryPayable->setDebit($document->getTotal());
+            $journalEntryPayable->setDate(new \DateTime());
 
-            $journalEntryCustomerAccount = new JournalEntry();
-            $journalEntryCustomerAccount->setAccount($document->getAccount()->getFinanceAccount());
-            $journalEntryCustomerAccount->setTransaction($transacion);
-            $journalEntryCustomerAccount->setDebit($document->getTotal());
-            $journalEntryCustomerAccount->setDate(new \DateTime());
+            $journalEntrySupplierAccount = new JournalEntry();
+            $journalEntrySupplierAccount->setAccount($document->getSupplier()->getFinanceAccount());
+            $journalEntrySupplierAccount->setTransaction($transacion);
+            $journalEntrySupplierAccount->setCredit($document->getTotal());
+            $journalEntrySupplierAccount->setDate(new \DateTime());
 
-            $transacion->addJournalEntry($journalEntryReceivable);
-            $transacion->addJournalEntry($journalEntryCustomerAccount);
+            $transacion->addJournalEntry($journalEntryPayable);
+            $transacion->addJournalEntry($journalEntrySupplierAccount);
 
             $em->persist($transacion);
             $em->flush();
 
-            return $this->redirect($this->generateUrl('finance_document_ci_show', array('id' => $document->getId())));
+            return $this->redirect($this->generateUrl('finance_document_si_show', array('id' => $document->getId())));
         }
 
         return array(
@@ -206,17 +161,17 @@ class CustomerInvoiceController extends Controller
     /**
      * Displays a form to edit an existing Document entity.
      *
-     * @Route("/{id}/edit", name="finance_document_ci_edit", requirements={"id"="\d+"})
+     * @Route("/{id}/edit", name="finance_document_si_edit", requirements={"id"="\d+"})
      * @Method("GET")
      * @Template()
      */
     public function editAction(Document $document)
     {
         $editForm = $this->createForm(new DocumentType(), $document, array(
-            'action' => $this->generateUrl('finance_document_ci_update', array('id' => $document->getid())),
+            'action' => $this->generateUrl('finance_document_si_update', array('id' => $document->getid())),
             'method' => 'PUT',
         ));
-        $deleteForm = $this->createDeleteForm($document->getId(), 'finance_document_ci_delete');
+        $deleteForm = $this->createDeleteForm($document->getId(), 'finance_document_si_delete');
 
         return array(
             'document' => $document,
@@ -228,23 +183,23 @@ class CustomerInvoiceController extends Controller
     /**
      * Edits an existing Document entity.
      *
-     * @Route("/{id}/update", name="finance_document_ci_update", requirements={"id"="\d+"})
+     * @Route("/{id}/update", name="finance_document_si_update", requirements={"id"="\d+"})
      * @Method("PUT")
      * @Template("FlowerFinancesBundle:Document:edit.html.twig")
      */
     public function updateAction(Document $document, Request $request)
     {
         $editForm = $this->createForm(new DocumentType(), $document, array(
-            'action' => $this->generateUrl('finance_document_ci_update', array('id' => $document->getid())),
+            'action' => $this->generateUrl('finance_document_si_update', array('id' => $document->getid())),
             'method' => 'PUT',
         ));
 
         if ($editForm->handleRequest($request)->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirect($this->generateUrl('finance_document_ci_show', array('id' => $document->getId())));
+            return $this->redirect($this->generateUrl('finance_document_si_show', array('id' => $document->getId())));
         }
-        $deleteForm = $this->createDeleteForm($document->getId(), 'finance_document_ci_delete');
+        $deleteForm = $this->createDeleteForm($document->getId(), 'finance_document_si_delete');
 
         return array(
             'document' => $document,
@@ -256,7 +211,7 @@ class CustomerInvoiceController extends Controller
     /**
      * Displays a form to edit an existing Document entity.
      *
-     * @Route("/{id}/payments/new", name="finance_document_ci_payments_new", requirements={"id"="\d+"})
+     * @Route("/{id}/payments/new", name="finance_document_si_payments_new", requirements={"id"="\d+"})
      * @Method("GET")
      * @Template()
      */
@@ -267,8 +222,13 @@ class CustomerInvoiceController extends Controller
             'type' => Account::TYPE_ASSET,
         ));
 
+        $expenseAccounts = $em->getRepository('FlowerFinancesBundle:Account')->findBy(array(
+            'type' => Account::TYPE_EXPENSE,
+        ));
+
         return array(
             'assetAccounts' => $assetAccounts,
+            'expenseAccounts' => $expenseAccounts,
             'document' => $document,
         );
     }
@@ -276,9 +236,9 @@ class CustomerInvoiceController extends Controller
     /**
      * Displays a form to edit an existing Document entity.
      *
-     * @Route("/{id}/payments/create", name="finance_document_ci_payments_create", requirements={"id"="\d+"})
+     * @Route("/{id}/payments/create", name="finance_document_si_payments_create", requirements={"id"="\d+"})
      * @Method("POST")
-     * @Template("FlowerFinancesBundle:CustomerInvoice:addPayment.html.twig")
+     * @Template("FlowerFinancesBundle:SupplierInvoice:addPayment.html.twig")
      */
     public function paymentCreateAction(Request $request, Document $document)
     {
@@ -288,56 +248,54 @@ class CustomerInvoiceController extends Controller
         if ($request->get('amount')) {
             $amount = $request->get('amount');
             $date = new \DateTime($request->get('date'));
-            $accountId = $request->get('account_id');
+            $assetAccountId = $request->get('asset_account_id');
+            $expenseAccountId = $request->get('expense_account_id');
 
             /* financial transactions */
             $transaction = new Transaction();
             $transaction->setDate($date);
             $transaction->setDescription('Payment ' . $document->__toString());
-            $journalEntryReceivable = new JournalEntry();
+            $journalEntryPayable = new JournalEntry();
 
-            $receivableAccount = $em->getRepository('FlowerFinancesBundle:Account')->findOneBy(array(
-                'subtype' => Account::SUBTYPE_ASSET_RECEIVABLE,
+            $payableAccount = $em->getRepository('FlowerFinancesBundle:Account')->findOneBy(array(
+                'subtype' => Account::SUBTYPE_LIABILITY_PAYABLE,
             ));
 
+            $journalEntryPayable->setAccount($payableAccount);
+            $journalEntryPayable->setTransaction($transaction);
+            $journalEntryPayable->setCredit($amount);
+            $journalEntryPayable->setDate($date);
+            $transaction->addJournalEntry($journalEntryPayable);
 
-            $journalEntryReceivable->setAccount($receivableAccount);
-            $journalEntryReceivable->setTransaction($transaction);
-            $journalEntryReceivable->setDebit($amount);
-            $journalEntryReceivable->setDate($date);
-            $transaction->addJournalEntry($journalEntryReceivable);
+            $journalEntrySupplierAccount = new JournalEntry();
+            $journalEntrySupplierAccount->setAccount($document->getSupplier()->getFinanceAccount());
+            $journalEntrySupplierAccount->setTransaction($transaction);
+            $journalEntrySupplierAccount->setDebit($amount);
+            $journalEntrySupplierAccount->setDate($date);
+            $transaction->addJournalEntry($journalEntrySupplierAccount);
 
-            $journalEntryCustomerAccount = new JournalEntry();
-            $journalEntryCustomerAccount->setAccount($document->getAccount()->getFinanceAccount());
-            $journalEntryCustomerAccount->setTransaction($transaction);
-            $journalEntryCustomerAccount->setCredit($amount);
-            $journalEntryCustomerAccount->setDate($date);
-            $transaction->addJournalEntry($journalEntryCustomerAccount);
+            $expenseAccount = $em->getRepository('FlowerFinancesBundle:Account')->find($expenseAccountId);
+            $expenseEntry = new JournalEntry();
+            $expenseEntry->setAccount($expenseAccount);
+            $expenseEntry->setTransaction($transaction);
+            $expenseEntry->setDebit($amount);
+            $expenseEntry->setDate($date);
+            $transaction->addJournalEntry($expenseEntry);
 
-            $salesAccount = $em->getRepository('FlowerFinancesBundle:Account')->findOneBy(array(
-                'subtype' => Account::SUBTYPE_INCOME_SALES,
-            ));
-            $salesEntry = new JournalEntry();
-            $salesEntry->setAccount($salesAccount);
-            $salesEntry->setTransaction($transaction);
-            $salesEntry->setCredit($amount);
-            $salesEntry->setDate($date);
-            $transaction->addJournalEntry($salesEntry);
-
-            $incomeAccount = $em->getRepository('FlowerFinancesBundle:Account')->find($accountId);
-            $incomeEntry = new JournalEntry();
-            $incomeEntry->setAccount($incomeAccount);
-            $incomeEntry->setDebit($amount);
-            $incomeEntry->setDate($date);
-            $incomeEntry->setTransaction($transaction);
-            $transaction->addJournalEntry($incomeEntry);
+            $assetAccount = $em->getRepository('FlowerFinancesBundle:Account')->find($assetAccountId);
+            $assetEntry = new JournalEntry();
+            $assetEntry->setAccount($assetAccount);
+            $assetEntry->setCredit($amount);
+            $assetEntry->setDate($date);
+            $assetEntry->setTransaction($transaction);
+            $transaction->addJournalEntry($assetEntry);
 
             $em->persist($transaction);
             $em->flush();
 
             $payment = new Payment();
             $payment->setAmount($amount);
-            $payment->setType(Payment::TYPE_INCOME);
+            $payment->setType(Payment::TYPE_EXPENSE);
             $payment->setName('Payment ' . $document->__toString());
             $payment->setDescription('Payment ' . $document->__toString());
             $payment->addDocument($document);
@@ -356,7 +314,7 @@ class CustomerInvoiceController extends Controller
 
             $em->flush();
 
-            return $this->redirect($this->generateUrl('finance_document_ci_show', array(
+            return $this->redirect($this->generateUrl('finance_document_si_show', array(
                 'id' => $document->getId(),
             )));
 
@@ -376,13 +334,13 @@ class CustomerInvoiceController extends Controller
     /**
      * Save order.
      *
-     * @Route("/order/{field}/{type}", name="finance_document_ci_sort")
+     * @Route("/order/{field}/{type}", name="finance_document_si_sort")
      */
     public function sortAction($field, $type)
     {
         $this->setOrder('document', $field, $type);
 
-        return $this->redirect($this->generateUrl('finance_document_ci'));
+        return $this->redirect($this->generateUrl('finance_document_si'));
     }
 
     /**
@@ -421,19 +379,19 @@ class CustomerInvoiceController extends Controller
     /**
      * Deletes a Document entity.
      *
-     * @Route("/{id}/delete", name="finance_document_ci_delete", requirements={"id"="\d+"})
+     * @Route("/{id}/delete", name="finance_document_si_delete", requirements={"id"="\d+"})
      * @Method("DELETE")
      */
     public function deleteAction(Document $document, Request $request)
     {
-        $form = $this->createDeleteForm($document->getId(), 'finance_document_ci_delete');
+        $form = $this->createDeleteForm($document->getId(), 'finance_document_si_delete');
         if ($form->handleRequest($request)->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $em->remove($document);
             $em->flush();
         }
 
-        return $this->redirect($this->generateUrl('finance_document_ci'));
+        return $this->redirect($this->generateUrl('finance_document_si'));
     }
 
     /**

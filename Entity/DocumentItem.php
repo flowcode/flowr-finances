@@ -8,12 +8,12 @@ use Gedmo\Mapping\Annotation as Gedmo;
 use JMS\Serializer\Annotation\Groups;
 
 /**
- * CustomerInvoiceItem
+ * DocumentItem
  *
- * @ORM\Table(name="finance_customer_invoice_item")
- * @ORM\Entity(repositoryClass="Flower\FinancesBundle\Repository\CustomerInvoiceItemRepository")
+ * @ORM\Table(name="finance_document_item")
+ * @ORM\Entity(repositoryClass="Flower\FinancesBundle\Repository\DocumentItemRepository")
  */
-class CustomerInvoiceItem
+class DocumentItem
 {
     /**
      * @var integer
@@ -60,16 +60,16 @@ class CustomerInvoiceItem
     private $total;
 
     /**
-     * @ORM\ManyToOne(targetEntity="\Flower\FinancesBundle\Entity\CustomerInvoice", inversedBy="items")
+     * @ORM\ManyToOne(targetEntity="\Flower\FinancesBundle\Entity\Document", inversedBy="items")
      * @ORM\JoinColumn(name="customer_invoice_id", referencedColumnName="id")
      */
-    protected $customerInvoice;
+    protected $document;
 
 
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -80,7 +80,7 @@ class CustomerInvoiceItem
      * Set units
      *
      * @param integer $units
-     * @return CustomerInvoiceItem
+     * @return DocumentItem
      */
     public function setUnits($units)
     {
@@ -92,7 +92,7 @@ class CustomerInvoiceItem
     /**
      * Get units
      *
-     * @return integer 
+     * @return integer
      */
     public function getUnits()
     {
@@ -103,7 +103,7 @@ class CustomerInvoiceItem
      * Set unitPrice
      *
      * @param float $unitPrice
-     * @return CustomerInvoiceItem
+     * @return DocumentItem
      */
     public function setUnitPrice($unitPrice)
     {
@@ -115,7 +115,7 @@ class CustomerInvoiceItem
     /**
      * Get unitPrice
      *
-     * @return float 
+     * @return float
      */
     public function getUnitPrice()
     {
@@ -126,7 +126,7 @@ class CustomerInvoiceItem
      * Set total
      *
      * @param float $total
-     * @return CustomerInvoiceItem
+     * @return DocumentItem
      */
     public function setTotal($total)
     {
@@ -138,7 +138,7 @@ class CustomerInvoiceItem
     /**
      * Get total
      *
-     * @return float 
+     * @return float
      */
     public function getTotal()
     {
@@ -146,33 +146,33 @@ class CustomerInvoiceItem
     }
 
     /**
-     * Set customerInvoice
+     * Set document
      *
-     * @param \Flower\FinancesBundle\Entity\CustomerInvoice $customerInvoice
-     * @return CustomerInvoiceItem
+     * @param \Flower\FinancesBundle\Entity\Document $document
+     * @return DocumentItem
      */
-    public function setCustomerInvoice(\Flower\FinancesBundle\Entity\CustomerInvoice $customerInvoice = null)
+    public function setDocument(\Flower\FinancesBundle\Entity\Document $document = null)
     {
-        $this->customerInvoice = $customerInvoice;
+        $this->document = $document;
 
         return $this;
     }
 
     /**
-     * Get customerInvoice
+     * Get document
      *
-     * @return \Flower\FinancesBundle\Entity\CustomerInvoice 
+     * @return \Flower\FinancesBundle\Entity\Document
      */
-    public function getCustomerInvoice()
+    public function getDocument()
     {
-        return $this->customerInvoice;
+        return $this->document;
     }
 
     /**
      * Set product
      *
      * @param \Flower\ModelBundle\Entity\Stock\Product $product
-     * @return CustomerInvoiceItem
+     * @return DocumentItem
      */
     public function setProduct(\Flower\ModelBundle\Entity\Stock\Product $product = null)
     {
@@ -184,7 +184,7 @@ class CustomerInvoiceItem
     /**
      * Get product
      *
-     * @return \Flower\ModelBundle\Entity\Stock\Product 
+     * @return \Flower\ModelBundle\Entity\Stock\Product
      */
     public function getProduct()
     {
@@ -195,7 +195,7 @@ class CustomerInvoiceItem
      * Set service
      *
      * @param \Flower\ModelBundle\Entity\Stock\Service $service
-     * @return CustomerInvoiceItem
+     * @return DocumentItem
      */
     public function setService(\Flower\ModelBundle\Entity\Stock\Service $service = null)
     {
@@ -207,7 +207,7 @@ class CustomerInvoiceItem
     /**
      * Get service
      *
-     * @return \Flower\ModelBundle\Entity\Stock\Service 
+     * @return \Flower\ModelBundle\Entity\Stock\Service
      */
     public function getService()
     {

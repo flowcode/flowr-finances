@@ -2,6 +2,8 @@
 
 namespace Flower\FinancesBundle\Controller;
 
+use Flower\FinancesBundle\Entity\Document;
+use Flower\FinancesBundle\Entity\JournalEntry;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -62,6 +64,38 @@ class TransactionController extends Controller
     /**
      * Displays a form to create a new Transaction entity.
      *
+     * @Route("/new/Document/{id}", name="finance_transaction_new_from_invoice")
+     * @Method("GET")
+     * @Template("FlowerFinancesBundle:Transaction:new.html.twig")
+     */
+    public function newFromDocumentAction(Document $Document)
+    {
+        $transaction = new Transaction();
+
+        $financeAccount = $Document->getAccount()->getFinanceAccount();
+        if ($financeAccount) {
+            $desc = "Pago " . $Document->getAccount()->getName();
+            $desc .= " por factura " . $Document->getId();
+            $transaction->setDescription($desc);
+
+            $journalEntry = new JournalEntry();
+            $journalEntry->setAccount($financeAccount);
+            $journalEntry->getDate(new \DateTime());
+
+            $transaction->addJournalEntry($journalEntry);
+        }
+
+        $form = $this->createForm(new TransactionType(), $transaction);
+
+        return array(
+            'transaction' => $transaction,
+            'form' => $form->createView(),
+        );
+    }
+
+    /**
+     * Displays a form to create a new Transaction entity.
+     *
      * @Route("/new", name="finance_transaction_new")
      * @Method("GET")
      * @Template()
@@ -91,10 +125,10 @@ class TransactionController extends Controller
         if ($form->handleRequest($request)->isValid()) {
             $em = $this->getDoctrine()->getManager();
 
-            foreach ($transaction->getJournalEntries() as $entry){
+            foreach ($transaction->getJournalEntries() as $entry) {
                 $entry->setTransaction($transaction);
             }
-            
+
             $em->persist($transaction);
             $em->flush();
 
@@ -124,7 +158,7 @@ class TransactionController extends Controller
 
         return array(
             'transaction' => $transaction,
-            'edit_form' => $editForm->createView(),
+            'form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         );
     }
@@ -151,7 +185,7 @@ class TransactionController extends Controller
 
         return array(
             'transaction' => $transaction,
-            'edit_form' => $editForm->createView(),
+            'form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         );
     }

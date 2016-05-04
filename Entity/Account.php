@@ -22,6 +22,10 @@ class Account
     const TYPE_EXPENSE = 4;
     const TYPE_EQUITY = 5;
 
+    const SUBTYPE_ASSET_RECEIVABLE = 1;
+    const SUBTYPE_LIABILITY_PAYABLE = 2;
+    const SUBTYPE_INCOME_SALES = 3;
+
     /**
      * @var integer
      *
@@ -53,6 +57,21 @@ class Account
     private $type;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="subtype", type="integer", nullable=true)
+     */
+    private $subtype;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="editable", type="boolean")
+     * @Groups({"public_api"})
+     */
+    protected $editable;
+
+    /**
      * @OneToMany(targetEntity="\Flower\FinancesBundle\Entity\JournalEntry", mappedBy="account")
      */
     protected $journalEntries;
@@ -79,6 +98,7 @@ class Account
     public function __construct()
     {
         $this->journalEntries = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->editable = true;
     }
 
 
@@ -268,6 +288,39 @@ class Account
     {
         return $this->journalEntries;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getEditable()
+    {
+        return $this->editable;
+    }
+
+    /**
+     * @param mixed $editable
+     */
+    public function setEditable($editable)
+    {
+        $this->editable = $editable;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSubtype()
+    {
+        return $this->subtype;
+    }
+
+    /**
+     * @param mixed $subtype
+     */
+    public function setSubtype($subtype)
+    {
+        $this->subtype = $subtype;
+    }
+    
 
     function __toString()
     {

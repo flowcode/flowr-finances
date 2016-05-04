@@ -24,6 +24,14 @@ class AccountType extends AbstractType
                     4 => 'account_type_expense',
                     5 => 'account_type_equity',
                 )
+            ))
+            ->add('subtype', 'choice', array(
+                'required' => false,
+                'placeholder' => 'Choose an option',
+                'choices' => array(
+                    1 => 'SUBTYPE_ASSET_RECEIVABLE',
+                    2 => 'SUBTYPE_LIABILITY_PAYABLE',
+                )
             ));
     }
 

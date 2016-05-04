@@ -10,17 +10,15 @@
     <section class="content-header">
         <h1>
             <a href="{{ path('finance_document_ci') }}">
-                {{ 'customer_invoices'|trans({}, 'Finance')|title }}
+                {{ 'supplier_invoices'|trans({}, 'Finance')|title }}
             </a>
-            /
-            {{ 'customerInvoice' | trans({}, 'Finance') }}
         </h1>
     </section>
     <section class="content">
         <div class="box" id='showDocument'>
             <div class="box-header">
                 <h3 class="box-title">
-                    {{ 'customer_invoice' | trans({}, 'Finance')|capitalize }} #{{ document.id }}
+                    {{ 'supplier_invoice' | trans({}, 'Finance')|capitalize }} #{{ document.id }}
                     {{ include('FlowerFinancesBundle:Document:invoice_status.html.twig', {'status':document.status}) }}
                 </h3>
                 <div class="box-tools  pull-right">
@@ -36,16 +34,19 @@
                             {{ 'Edit'|trans({}, 'Finance') }}
                         </a>
                         <a class="btn btn-link btn-sm"
-                           href="{{ path('finance_document_ci_payments_new',{'id':document.id}) }}">
+                           href="{{ path('finance_document_si_payments_new',{'id':document.id}) }}">
                             {{ 'Add payment'|trans({}, 'Finance') }}
                         </a>
                     </div>
                     <input name="modal" type="hidden" value="0">
                     {{ form_end(delete_form) }}
+
                 </div>
             </div>
             <div class="box-body">
-                Cliente: {{ document.account }}
+                <h4>
+                    {{ 'supplier'|trans({}, 'Product')|title }}: {{ document.supplier }}
+                </h4>
 
                 <h4>Detalle</h4>
                 <table class="table table-condensed">
@@ -106,6 +107,10 @@
                         <th scope="row">{{ 'Tax'|trans({}, 'Finance') }}</th>
                         <td>{{ document.tax }}</td>
                     </tr>
+                    <tr>
+                        <th scope="row">{{ 'Status'|trans({}, 'Finance') }}</th>
+                        <td></td>
+                    </tr>
                     </tbody>
                 </table>
             </div>
@@ -160,6 +165,7 @@
             </div>
 
         </div>
+
     </section>
 
     <div class="btn-group record_actions"></div>

@@ -14,15 +14,22 @@ class JournalEntryType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('account')
+            ->add('account', null, array(
+                'placeholder' => 'Cuenta',
+            ))
             ->add('debit', null, array(
                 'required' => false,
+                'attr' => array(
+                    'placeholder' => 'Debit',
+                ),
             ))
             ->add('credit', null, array(
                 'required' => false,
+                'attr' => array(
+                    'placeholder' => 'Credit',
+                ),
             ))
-            ->add('date')
-        ;
+            ->add('date');
     }
 
     /**
@@ -32,7 +39,7 @@ class JournalEntryType extends AbstractType
     {
         $resolver->setDefaults(array(
             'data_class' => 'Flower\FinancesBundle\Entity\JournalEntry',
-            'translation_domain' => 'JournalEntry',
+            'translation_domain' => 'Finance',
         ));
     }
 

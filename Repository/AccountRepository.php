@@ -21,4 +21,17 @@ class AccountRepository extends EntityRepository
 
         return $qb->getQuery()->getResult();
     }
+
+    public function getGeneralLedger($from = null, $to = null)
+    {
+        $qb = $this->createQueryBuilder('a');
+
+        $qb->select("a.name, a.type, SUM(je.debit) as debit, SUM(je.credit) as credit");
+        $qb->leftJoin("a.journalEntries", "je");
+        $qb->groupBy("a.name");
+
+
+        return $qb->getQuery()->getResult();
+    }
+
 }

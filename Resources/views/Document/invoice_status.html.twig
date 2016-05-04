@@ -1,0 +1,13 @@
+{% if status == 'status_paid' %}
+    <span class="label label-success">
+        {{ status | trans({}, 'Finance')|capitalize }}
+    </span>
+{% elseif status == 'status_pending' %}
+    <span class="label label-error">
+        {{ status | trans({}, 'Finance')|capitalize }}
+    </span>
+{% else %}
+    <span class="label label-default">
+        {{ status | trans({}, 'Finance')|capitalize }}
+    </span>
+{% endif %}

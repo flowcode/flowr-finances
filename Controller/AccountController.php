@@ -31,7 +31,7 @@ class AccountController extends Controller
         $qb = $em->getRepository('FlowerFinancesBundle:Account')->createQueryBuilder('a');
         $this->addQueryBuilderSort($qb, 'account');
         $paginator = $this->get('knp_paginator')->paginate($qb, $request->query->get('page', 1), 20);
-        
+
         return array(
             'paginator' => $paginator,
         );
@@ -54,8 +54,8 @@ class AccountController extends Controller
 
         return array(
 
-        'account' => $account,
-        'edit_form'   => $editForm->createView(),
+            'account' => $account,
+            'edit_form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
 
         );
@@ -75,7 +75,7 @@ class AccountController extends Controller
 
         return array(
             'account' => $account,
-            'form'   => $form->createView(),
+            'form' => $form->createView(),
         );
     }
 
@@ -100,7 +100,7 @@ class AccountController extends Controller
 
         return array(
             'account' => $account,
-            'form'   => $form->createView(),
+            'form' => $form->createView(),
         );
     }
 
@@ -121,7 +121,7 @@ class AccountController extends Controller
 
         return array(
             'account' => $account,
-            'edit_form'   => $editForm->createView(),
+            'edit_form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         );
     }
@@ -148,7 +148,7 @@ class AccountController extends Controller
 
         return array(
             'account' => $account,
-            'edit_form'   => $editForm->createView(),
+            'edit_form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         );
     }
@@ -167,9 +167,9 @@ class AccountController extends Controller
     }
 
     /**
-     * @param string $name  session name
+     * @param string $name session name
      * @param string $field field name
-     * @param string $type  sort type ("ASC"/"DESC")
+     * @param string $type sort type ("ASC"/"DESC")
      */
     protected function setOrder($name, $field, $type = 'ASC')
     {
@@ -189,7 +189,7 @@ class AccountController extends Controller
 
     /**
      * @param QueryBuilder $qb
-     * @param string       $name
+     * @param string $name
      */
     protected function addQueryBuilderSort(QueryBuilder $qb, $name)
     {
@@ -220,8 +220,8 @@ class AccountController extends Controller
     /**
      * Create Delete form
      *
-     * @param integer                       $id
-     * @param string                        $route
+     * @param integer $id
+     * @param string $route
      * @return \Symfony\Component\Form\Form
      */
     protected function createDeleteForm($id, $route)
@@ -229,8 +229,7 @@ class AccountController extends Controller
         return $this->createFormBuilder(null, array('attr' => array('id' => 'delete')))
             ->setAction($this->generateUrl($route, array('id' => $id)))
             ->setMethod('DELETE')
-            ->getForm()
-        ;
+            ->getForm();
     }
 
 }

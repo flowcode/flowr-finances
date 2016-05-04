@@ -11,18 +11,48 @@
     <section class="content-header">
         <h1>
             {{ 'finances'|trans({}, 'Finance')|title }}
+
         </h1>
     </section>
     <section class="content">
 
         <div class="row">
+
             <div class="col-md-3 col-sm-6 col-xs-12">
                 <div class="info-box">
                     <span class="info-box-icon bg-green">
                         <i class="fa fa-chevron-up"></i>
                     </span>
                     <div class="info-box-content">
-                        <span class="info-box-text">{{ 'assets' }}</span>
+                        <span class="info-box-text">{{ 'incomePayments'|trans({},'Finance')|title }}</span>
+                        <span class="info-box-number">{{ incomePayments }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3 col-sm-6 col-xs-12">
+                <div class="info-box">
+                    <span class="info-box-icon bg-green">
+                        <i class="fa fa-chevron-up"></i>
+                    </span>
+                    <div class="info-box-content">
+                        <span class="info-box-text">{{ 'expensePayments'|trans({},'Finance')|title }}</span>
+                        <span class="info-box-number">{{ expensePayments }}</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="row">
+
+            <div class="col-md-3 col-sm-6 col-xs-12">
+                <div class="info-box">
+                    <span class="info-box-icon bg-green">
+                        <i class="fa fa-chevron-up"></i>
+                    </span>
+                    <div class="info-box-content">
+                        <span class="info-box-text">{{ 'assets'|trans({},'Finance')|title }}</span>
                         <span class="info-box-number">{{ assets.debit }}</span>
                     </div>
                     <!-- /.info-box-content -->
@@ -37,7 +67,7 @@
                     </span>
 
                     <div class="info-box-content">
-                        <span class="info-box-text">{{ 'liability' }}</span>
+                        <span class="info-box-text">{{ 'liability'|trans({},'Finance')|title }}</span>
                         <span class="info-box-number">{{ liability.credit }}</span>
                     </div>
                     <!-- /.info-box-content -->
@@ -52,7 +82,7 @@
                     </span>
 
                     <div class="info-box-content">
-                        <span class="info-box-text">{{ 'income' }}</span>
+                        <span class="info-box-text">{{ 'income'|trans({},'Finance')|title }}</span>
                         <span class="info-box-number">{{ income.credit }}</span>
                     </div>
                     <!-- /.info-box-content -->
@@ -67,7 +97,7 @@
                     </span>
 
                     <div class="info-box-content">
-                        <span class="info-box-text">{{ 'expense' }}</span>
+                        <span class="info-box-text">{{ 'expense'|trans({},'Finance')|title }}</span>
                         <span class="info-box-number">{{ expense.debit }}</span>
                     </div>
                     <!-- /.info-box-content -->
