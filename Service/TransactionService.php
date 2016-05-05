@@ -45,7 +45,7 @@ class TransactionService
             "%document_code%" => $document->getType()->getCode(),
             "%document_number%" => $document->getId(),
             "%document_to%" => $document->getAccount()->getName(),
-        ));
+        ), 'Finance');
 
         $transaction->setDescription($description);
         $transaction->setDate(new \DateTime());
