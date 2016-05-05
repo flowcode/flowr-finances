@@ -1,0 +1,19 @@
+services:
+
+    finances.repository.account:
+        class: Doctrine\ORM\EntityRepository
+        factory_service: doctrine.orm.default_entity_manager
+        factory_method: getRepository
+        arguments:
+            - Flower\FinancesBundle\Entity\Account
+
+    finances.repository.transaction:
+        class: Doctrine\ORM\EntityRepository
+        factory_service: doctrine.orm.default_entity_manager
+        factory_method: getRepository
+        arguments:
+            - Flower\FinancesBundle\Entity\Transaction
+
+    finances.service.transaction:
+        class: Flower\FinancesBundle\Service\TransactionService
+        arguments: ['@translator', '@finances.repository.transaction', '@finances.repository.account']

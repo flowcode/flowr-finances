@@ -64,7 +64,7 @@ class Document
     private $account;
 
     /**
-     * @ORM\ManyToOne(targetEntity="\Flower\StockBundle\Entity\Supplier")
+     * @ORM\ManyToOne(targetEntity="\Flower\ModelBundle\Entity\Clients\Account")
      * @ORM\JoinColumn(name="supplier_id", referencedColumnName="id")
      * @Groups({"public_api"})
      */
@@ -423,10 +423,10 @@ class Document
     /**
      * Set type
      *
-     * @param string $type
+     * @param \Flower\FinancesBundle\Entity\DocumentType $type
      * @return Document
      */
-    public function setType($type)
+    public function setType(\Flower\FinancesBundle\Entity\DocumentType $type)
     {
         $this->type = $type;
 
@@ -436,7 +436,7 @@ class Document
     /**
      * Get type
      *
-     * @return string
+     * @return \Flower\FinancesBundle\Entity\DocumentType
      */
     public function getType()
     {

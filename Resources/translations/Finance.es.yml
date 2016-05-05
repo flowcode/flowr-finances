@@ -35,6 +35,7 @@ status_paid: pagado
 
 Document: Documento
 CustomerInvoice list: facturas
+Supplier: Proveedor
 
 Account: Cliente
 Total: Total
@@ -56,10 +57,13 @@ Description: Descripción
 Journal entries: Entradas del Diario
 Date: Fecha
 
+transaction.description.document: "%document_code% #%document_number% para %document_to%"
+
 #journal entries
 journal_entries: libro diario
 add_journal_entries: agregar entrada
 
+accounting: contabilidad
 reports: reportes
 general_ledger: libro mayor
 income: ganancia

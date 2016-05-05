@@ -35,10 +35,12 @@
                         <a class="btn btn-link btn-sm" onclick="showEdit(true)">
                             {{ 'Edit'|trans({}, 'Finance') }}
                         </a>
+                        {% if document.status == 'status_pending' %}
                         <a class="btn btn-link btn-sm"
                            href="{{ path('finance_document_ci_payments_new',{'id':document.id}) }}">
                             {{ 'Add payment'|trans({}, 'Finance') }}
                         </a>
+                        {% endif %}
                     </div>
                     <input name="modal" type="hidden" value="0">
                     {{ form_end(delete_form) }}

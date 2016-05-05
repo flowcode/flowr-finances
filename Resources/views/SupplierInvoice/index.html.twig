@@ -6,14 +6,14 @@
         {% set sort = app.session.get('sort.' ~ name) %}
         {% if sort and sort.field == field %}
             {% if sort.type == 'DESC' %}
-                <a href="{{ path('finance_document_sort', {field: field, type: 'ASC'}) }}">{{ label | trans({},'Document') }}
+                <a href="{{ path('finance_document_sort', {field: field, type: 'ASC'}) }}">{{ label | trans({},'Finance') }}
                     <i class="fa fa-sort-down"></i></a>
             {% elseif sort.type == 'ASC' %}
-                <a href="{{ path('finance_document_sort', {field: field, type: 'DESC'}) }}">{{ label | trans({},'Document') }}
+                <a href="{{ path('finance_document_sort', {field: field, type: 'DESC'}) }}">{{ label | trans({},'Finance') }}
                     <i class="fa fa-sort-up"></i></a>
             {% endif %}
         {% else %}
-            <a href="{{ path('finance_document_sort', {field: field, type: 'ASC'}) }}">{{ label | trans({},'Document') }}
+            <a href="{{ path('finance_document_sort', {field: field, type: 'ASC'}) }}">{{ label | trans({},'Finance') }}
                 <i class="fa fa-sort"></i></a>
         {% endif %}
     {% endspaceless %}
@@ -29,7 +29,7 @@
 {% block body %}
     <section class="content-header">
         <h1>
-            {{ 'supplier_invoices'|trans({}, 'Finance')|title }}
+            {{ 'supplier_invoices'|trans({}, 'Finance')|capitalize }}
         </h1>
     </section>
     <section class="content">
@@ -59,7 +59,9 @@
                             <td>
                                 <a href="{{ path('finance_document_si_show', {id: document.id}) }}">{{ document.id }}</a>
                             </td>
-                            <td>{{ document.status }}</td>
+                            <td>
+                                {{ include('FlowerFinancesBundle:Document:invoice_status_text.html.twig', {'status':document.status}) }}
+                            </td>
                             <td>{{ document.supplier }}</td>
                             <td>{{ document.total }}</td>
                             <td>{{ document.created|date('Y-m-d') }}</td>

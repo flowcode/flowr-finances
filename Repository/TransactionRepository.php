@@ -3,6 +3,7 @@
 namespace Flower\FinancesBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
+use Flower\FinancesBundle\Entity\Transaction;
 
 /**
  * TransactionRepository
@@ -12,4 +13,9 @@ use Doctrine\ORM\EntityRepository;
  */
 class TransactionRepository extends EntityRepository
 {
+    public function save(Transaction $transaction)
+    {
+        $this->_em->persist($transaction);
+        $this->_em->flush();
+    }
 }

@@ -3,7 +3,7 @@
 {% block title %}Transaction - {{ parent() }}{% endblock %}
 
 {% block app_menu %}
-    {{ include("FlowerFinancesBundle::appnav.html.twig", { 'app_account': true }) }}
+    {{ include("FlowerFinancesBundle::appnav.html.twig", { 'app_accounting': true, 'app_transaction':true }) }}
 {% endblock %}
 
 {% block body %}

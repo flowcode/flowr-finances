@@ -61,32 +61,32 @@
         </li>
 
 
-        <li {% if app_sale is defined %}class="active"{% endif %}>
-            <a href="{{ path('finance_account') }}">
-                {{ 'accounts'|trans({}, 'Finance')|title }}
-            </a>
-        </li>
-        <li {% if app_sale is defined %}class="active"{% endif %}>
-            <a href="{{ path('finance_transaction') }}">
-                {{ 'transactions'|trans({}, 'Finance')|title }}
-            </a>
-        </li>
-        <li {% if app_sale is defined %}class="active"{% endif %}>
-            <a href="{{ path('finance_journal_entry') }}">
-                {{ 'journal_entries'|trans({}, 'Finance')|title }}
-            </a>
-        </li>
-        <li class="treeview {% if app_sale is defined %}active{% endif %}">
+        <li class="treeview {% if app_accounting is defined %}active{% endif %}">
             <a href="#">
                 <span>
-                    {{ 'reports'|trans({}, 'Finance')|title }}
+                    {{ 'accounting'|trans({}, 'Finance')|title }}
                 </span>
                 <i class="fa fa-angle-left pull-right"></i>
             </a>
             <ul class="treeview-menu">
-                <li {% if app_supplier_invoices is defined %}class="active"{% endif %}>
+                <li {% if app_general_ledger is defined %}class="active"{% endif %}>
                     <a href="{{ path('finance_report_general_ledger') }}">
                         {{ 'general_ledger'|trans({}, 'Finance')|title }}
+                    </a>
+                </li>
+                <li {% if app_journal_entries is defined %}class="active"{% endif %}>
+                    <a href="{{ path('finance_journal_entry') }}">
+                        {{ 'journal_entries'|trans({}, 'Finance')|title }}
+                    </a>
+                </li>
+                <li {% if app_transaction is defined %}class="active"{% endif %}>
+                    <a href="{{ path('finance_transaction') }}">
+                        {{ 'transactions'|trans({}, 'Finance')|title }}
+                    </a>
+                </li>
+                <li {% if app_accounts is defined %}class="active"{% endif %}>
+                    <a href="{{ path('finance_account') }}">
+                        {{ 'accounts'|trans({}, 'Finance')|title }}
                     </a>
                 </li>
             </ul>

@@ -2,6 +2,10 @@
 
 {% block title %}{{ '%entity% creation'|trans({'%entity%': 'JournalEntry'}, 'JournalEntry') }} - {{ parent() }}{% endblock %}
 
+{% block app_menu %}
+    {{ include("FlowerFinancesBundle::appnav.html.twig", { 'app_accounting': true, 'app_journal_entries':true }) }}
+{% endblock %}
+
 {% block body %}
     <section class="content-header">
         <h1>

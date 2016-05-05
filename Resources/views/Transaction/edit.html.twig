@@ -2,6 +2,10 @@
 
 {% block title %}{{ '%entity% edit'|trans({'%entity%': 'Transaction'}, 'Transaction') }} - {{ parent() }}{% endblock %}
 
+{% block app_menu %}
+    {{ include("FlowerFinancesBundle::appnav.html.twig", { 'app_accounting': true, 'app_transaction':true }) }}
+{% endblock %}
+
 {% block body %}
     <section class="content-header">
         <h1>

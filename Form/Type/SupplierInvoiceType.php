@@ -15,11 +15,7 @@ class SupplierInvoiceType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('supplier', 'genemu_jqueryselect2_entity',
-                array('class' => 'Flower\StockBundle\Entity\Supplier',
-                    'property' => 'name',
-                    'multiple' => false,
-                    'required' => false))
+            ->add('supplier')
             ->add('total')
             ->add('totalWithTax')
             ->add('discount')

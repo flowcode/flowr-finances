@@ -111,7 +111,10 @@ class CustomerInvoiceController extends Controller
         $document->setTotal($sale->getTotal());
         $document->setTotalDiscount($sale->getTotalDiscount());
         $document->setTotalWithTax($sale->getTotalWithTax());
-        $document->setType(Document::TYPE_CUSTOMER_INVOICE);
+        $type = $this->getDoctrine()->getManager()->getRepository('FlowerFinancesBundle:DocumentType')->findOneBy(array(
+            'name' => \Flower\FinancesBundle\Entity\DocumentType::TYPE_CUSTOMER_INVOICE
+        ));
+        $document->setType($type);
         $document->setSale($sale);
 
         foreach ($sale->getSaleItems() as $saleItem) {
@@ -163,34 +166,7 @@ class CustomerInvoiceController extends Controller
                 $item->setDocument($document);
             }
 
-
             $em->persist($document);
-            $em->flush();
-
-            /* financial transaction */
-            $transacion = new Transaction();
-            $transacion->setDescription('Customer Invoice' . $document->getId() . ' for' . $document->getAccount()->getName());
-            $transacion->setDate(new \DateTime());
-
-            $journalEntryReceivable = new JournalEntry();
-            $receivableAccount = $em->getRepository('FlowerFinancesBundle:Account')->findOneBy(array(
-                'subtype' => Account::SUBTYPE_ASSET_RECEIVABLE,
-            ));
-            $journalEntryReceivable->setAccount($receivableAccount);
-            $journalEntryReceivable->setTransaction($transacion);
-            $journalEntryReceivable->setCredit($document->getTotal());
-            $journalEntryReceivable->setDate(new \DateTime());
-
-            $journalEntryCustomerAccount = new JournalEntry();
-            $journalEntryCustomerAccount->setAccount($document->getAccount()->getFinanceAccount());
-            $journalEntryCustomerAccount->setTransaction($transacion);
-            $journalEntryCustomerAccount->setDebit($document->getTotal());
-            $journalEntryCustomerAccount->setDate(new \DateTime());
-
-            $transacion->addJournalEntry($journalEntryReceivable);
-            $transacion->addJournalEntry($journalEntryCustomerAccount);
-
-            $em->persist($transacion);
             $em->flush();
 
             return $this->redirect($this->generateUrl('finance_document_ci_show', array('id' => $document->getId())));
@@ -241,6 +217,11 @@ class CustomerInvoiceController extends Controller
 
         if ($editForm->handleRequest($request)->isValid()) {
             $this->getDoctrine()->getManager()->flush();
+
+            /* pending documents generates accounting transactions */
+            if ($document->getStatus() == Document::STATUS_PENDING) {
+                $this->get('finances.service.transaction')->createCustomerInvoiceTransaction($document);
+            }
 
             return $this->redirect($this->generateUrl('finance_document_ci_show', array('id' => $document->getId())));
         }
