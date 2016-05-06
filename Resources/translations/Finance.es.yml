@@ -46,6 +46,10 @@ Tax: Impuesto
 Status: Estado
 Items: Descripción
 
+customer_payments: pagos de clientes
+supplier_payments: pagos a proveedores
+simple_expense_payment: gasto simple
+
 STATUS_DRAFT: Borrador
 STATUS_PENDING: Pendiente de pago
 STATUS_PAID: Pagada
@@ -58,6 +62,7 @@ Journal entries: Entradas del Diario
 Date: Fecha
 
 transaction.description.document: "%document_code% #%document_number% para %document_to%"
+transaction.description.simple_expense: "Pago a %account_to%"
 
 #journal entries
 journal_entries: libro diario

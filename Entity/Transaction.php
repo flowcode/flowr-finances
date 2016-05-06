@@ -15,6 +15,10 @@ use JMS\Serializer\Annotation\Groups;
  */
 class Transaction
 {
+
+    const CIRCUIT_ONE = 1;
+    const CIRCUIT_TWO = 2;
+
     /**
      * @var integer
      *
@@ -44,6 +48,14 @@ class Transaction
     protected $journalEntries;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="circuit", type="integer")
+     * @Groups({"public_api"})
+     */
+    protected $circuit;
+
+    /**
      * @var \DateTime
      *
      * @ORM\Column(name="created", type="datetime")
@@ -64,6 +76,7 @@ class Transaction
      */
     public function __construct()
     {
+        $this->circuit = self::CIRCUIT_ONE;
         $this->journalEntries = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
@@ -209,5 +222,21 @@ class Transaction
         return $this->getDescription();
     }
 
+    /**
+     * @return int
+     */
+    public function getCircuit()
+    {
+        return $this->circuit;
+    }
 
+    /**
+     * @param int $circuit
+     */
+    public function setCircuit($circuit)
+    {
+        $this->circuit = $circuit;
+    }
+
+    
 }

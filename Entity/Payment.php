@@ -74,10 +74,17 @@ class Payment
     /**
      * @var \DateTime
      *
+     * @ORM\Column(name="date", type="datetime")
+     */
+    protected $date;
+
+    /**
+     * @var \DateTime
+     *
      * @ORM\Column(name="created", type="datetime")
      * @Gedmo\Timestampable(on="create")
      */
-    private $created;
+    protected $created;
 
     /**
      * @var \DateTime
@@ -258,7 +265,6 @@ class Payment
     }
 
 
-
     /**
      * Set amount
      *
@@ -275,7 +281,7 @@ class Payment
     /**
      * Get amount
      *
-     * @return float 
+     * @return float
      */
     public function getAmount()
     {
@@ -298,10 +304,28 @@ class Payment
     /**
      * Get transaction
      *
-     * @return \Flower\FinancesBundle\Entity\Transaction 
+     * @return \Flower\FinancesBundle\Entity\Transaction
      */
     public function getTransaction()
     {
         return $this->transaction;
     }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDate()
+    {
+        return $this->date;
+    }
+
+    /**
+     * @param \DateTime $date
+     */
+    public function setDate($date)
+    {
+        $this->date = $date;
+    }
+    
+
 }

@@ -16,6 +16,7 @@ class SupplierInvoiceType extends AbstractType
     {
         $builder
             ->add('supplier')
+            ->add('code')
             ->add('total')
             ->add('totalWithTax')
             ->add('discount')

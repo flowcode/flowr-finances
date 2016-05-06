@@ -16,10 +16,14 @@ class DocumentType
     const TYPE_CUSTOMER_INVOICE = 'customer_invoice';
     const TYPE_CUSTOMER_CREDIT_NOTE = 'customer_credit_note';
     const TYPE_CUSTOMER_DEBIT_NOTE = 'customer_debit_note';
+    const TYPE_CUSTOMER_RECEIPT = 'customer_receipt';
 
     const TYPE_SUPPLIER_INVOICE = 'supplier_invoice';
     const TYPE_SUPPLIER_CREDIT_NOTE = 'supplier_credit_note';
     const TYPE_SUPPLIER_DEBIT_NOTE = 'supplier_debit_note';
+    const TYPE_SUPPLIER_RECEIPT = 'supplier_receipt';
+
+    const TYPE_RECEIPT = 'receipt';
 
     /**
      * @var integer

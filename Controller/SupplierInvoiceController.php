@@ -118,35 +118,13 @@ class SupplierInvoiceController extends Controller
                 $item->setDocument($document);
             }
 
-
             $em->persist($document);
             $em->flush();
 
-            /* financial transaction */
-            $transacion = new Transaction();
-            $transacion->setDescription('Supplier Invoice' . $document->getId() . ' for' . $document->getSupplier()->getName());
-            $transacion->setDate(new \DateTime());
-
-            $journalEntryPayable = new JournalEntry();
-            $payableAccount = $em->getRepository('FlowerFinancesBundle:Account')->findOneBy(array(
-                'subtype' => Account::SUBTYPE_LIABILITY_PAYABLE,
-            ));
-            $journalEntryPayable->setAccount($payableAccount);
-            $journalEntryPayable->setTransaction($transacion);
-            $journalEntryPayable->setDebit($document->getTotal());
-            $journalEntryPayable->setDate(new \DateTime());
-
-            $journalEntrySupplierAccount = new JournalEntry();
-            $journalEntrySupplierAccount->setAccount($document->getSupplier()->getFinanceAccount());
-            $journalEntrySupplierAccount->setTransaction($transacion);
-            $journalEntrySupplierAccount->setCredit($document->getTotal());
-            $journalEntrySupplierAccount->setDate(new \DateTime());
-
-            $transacion->addJournalEntry($journalEntryPayable);
-            $transacion->addJournalEntry($journalEntrySupplierAccount);
-
-            $em->persist($transacion);
-            $em->flush();
+            /* pending documents generates accounting transactions */
+            if ($document->getStatus() == Document::STATUS_PENDING) {
+                $this->get('finances.service.transaction')->createSupplierInvoiceTransaction($document);
+            }
 
             return $this->redirect($this->generateUrl('finance_document_si_show', array('id' => $document->getId())));
         }
@@ -298,6 +276,7 @@ class SupplierInvoiceController extends Controller
             $payment->setType(Payment::TYPE_EXPENSE);
             $payment->setName('Payment ' . $document->__toString());
             $payment->setDescription('Payment ' . $document->__toString());
+            $payment->setDate($date);
             $payment->addDocument($document);
             $document->addPayment($payment);
 

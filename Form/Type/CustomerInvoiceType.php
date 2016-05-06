@@ -20,6 +20,7 @@ class CustomerInvoiceType extends AbstractType
                     'property' => 'name',
                     'multiple' => false,
                     'required' => false))
+            ->add('code')
             ->add('total')
             ->add('totalWithTax')
             ->add('discount')

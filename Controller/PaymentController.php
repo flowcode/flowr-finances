@@ -2,6 +2,9 @@
 
 namespace Flower\FinancesBundle\Controller;
 
+use Flower\FinancesBundle\Entity\Account;
+use Flower\FinancesBundle\Entity\Document;
+use Flower\FinancesBundle\Form\Type\SimpleExpensePaymentType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -31,7 +34,7 @@ class PaymentController extends Controller
         $qb = $em->getRepository('FlowerFinancesBundle:Payment')->createQueryBuilder('p');
         $this->addQueryBuilderSort($qb, 'payment');
         $paginator = $this->get('knp_paginator')->paginate($qb, $request->query->get('page', 1), 20);
-        
+
         return array(
             'paginator' => $paginator,
         );
@@ -54,8 +57,8 @@ class PaymentController extends Controller
 
         return array(
 
-        'payment' => $payment,
-        'edit_form'   => $editForm->createView(),
+            'payment' => $payment,
+            'edit_form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
 
         );
@@ -75,7 +78,94 @@ class PaymentController extends Controller
 
         return array(
             'payment' => $payment,
-            'form'   => $form->createView(),
+            'form' => $form->createView(),
+        );
+    }
+
+    /**
+     * Displays a form to create a new Payment entity.
+     *
+     * @Route("/new_simple_expense", name="finance_payment_simple_expense")
+     * @Method("GET")
+     * @Template("FlowerFinancesBundle:Payment:newSimpleExpense.html.twig")
+     */
+    public function newSimpleExpenseAction()
+    {
+        $em = $this->getDoctrine()->getManager();
+        $payment = new Payment();
+        $payment->setType(Payment::TYPE_EXPENSE);
+        $form = $this->createForm(new SimpleExpensePaymentType(), $payment);
+
+        $assetAccounts = $em->getRepository('FlowerFinancesBundle:Account')->findBy(array(
+            'type' => Account::TYPE_ASSET,
+        ));
+
+        $expenseAccounts = $em->getRepository('FlowerFinancesBundle:Account')->findBy(array(
+            'type' => Account::TYPE_EXPENSE,
+        ));
+
+        return array(
+            'form' => $form->createView(),
+            'assetAccounts' => $assetAccounts,
+            'expenseAccounts' => $expenseAccounts,
+        );
+    }
+
+    /**
+     * Displays a form to create a new Payment entity.
+     *
+     * @Route("/new_simple_expense", name="finance_payment_simple_expense_create")
+     * @Method("POST")
+     * @Template("FlowerFinancesBundle:Payment:newSimpleExpense.html.twig")
+     */
+    public function createSimpleExpenseAction(Request $request)
+    {
+        $payment = new Payment();
+        $payment->setType(Payment::TYPE_EXPENSE);
+
+        $em = $this->getDoctrine()->getManager();
+
+        $expenseAccount = $em->getRepository('FlowerFinancesBundle:Account')->find($request->get('expense_account_id'));
+        $assetAccount = $em->getRepository('FlowerFinancesBundle:Account')->find($request->get('asset_account_id'));
+
+        $form = $this->createForm(new SimpleExpensePaymentType(), $payment);
+        if ($form->handleRequest($request)->isValid()) {
+
+            /* has receipt */
+            if ($request->get('receipt_number')) {
+                $receipt = new Document();
+                $type = $this->getDoctrine()->getManager()->getRepository('FlowerFinancesBundle:DocumentType')->findOneBy(array(
+                    'name' => \Flower\FinancesBundle\Entity\DocumentType::TYPE_RECEIPT
+                ));
+                $receipt->setCode($request->get('receipt_number'));
+                $receipt->setType($type);
+                $receipt->setTotal($payment->getAmount());
+                $em->persist($receipt);
+            }
+
+            $transaction = $this->get('finances.service.transaction')->createSimpleExpenseTransaction($expenseAccount, $assetAccount, $payment->getAmount(), $payment->getDate());
+
+            $payment->setTransaction($transaction);
+            $payment->addDocument($receipt);
+
+            $em->persist($payment);
+            $em->flush();
+
+            return $this->redirect($this->generateUrl('finance_payment_show', array('id' => $payment->getId())));
+        }
+
+        $assetAccounts = $em->getRepository('FlowerFinancesBundle:Account')->findBy(array(
+            'type' => Account::TYPE_ASSET,
+        ));
+
+        $expenseAccounts = $em->getRepository('FlowerFinancesBundle:Account')->findBy(array(
+            'type' => Account::TYPE_EXPENSE,
+        ));
+
+        return array(
+            'form' => $form->createView(),
+            'assetAccounts' => $assetAccounts,
+            'expenseAccounts' => $expenseAccounts,
         );
     }
 
@@ -100,7 +190,7 @@ class PaymentController extends Controller
 
         return array(
             'payment' => $payment,
-            'form'   => $form->createView(),
+            'form' => $form->createView(),
         );
     }
 
@@ -121,7 +211,7 @@ class PaymentController extends Controller
 
         return array(
             'payment' => $payment,
-            'edit_form'   => $editForm->createView(),
+            'edit_form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         );
     }
@@ -148,7 +238,7 @@ class PaymentController extends Controller
 
         return array(
             'payment' => $payment,
-            'edit_form'   => $editForm->createView(),
+            'edit_form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         );
     }
@@ -167,9 +257,9 @@ class PaymentController extends Controller
     }
 
     /**
-     * @param string $name  session name
+     * @param string $name session name
      * @param string $field field name
-     * @param string $type  sort type ("ASC"/"DESC")
+     * @param string $type sort type ("ASC"/"DESC")
      */
     protected function setOrder($name, $field, $type = 'ASC')
     {
@@ -189,7 +279,7 @@ class PaymentController extends Controller
 
     /**
      * @param QueryBuilder $qb
-     * @param string       $name
+     * @param string $name
      */
     protected function addQueryBuilderSort(QueryBuilder $qb, $name)
     {
@@ -220,8 +310,8 @@ class PaymentController extends Controller
     /**
      * Create Delete form
      *
-     * @param integer                       $id
-     * @param string                        $route
+     * @param integer $id
+     * @param string $route
      * @return \Symfony\Component\Form\Form
      */
     protected function createDeleteForm($id, $route)
@@ -229,8 +319,7 @@ class PaymentController extends Controller
         return $this->createFormBuilder(null, array('attr' => array('id' => 'delete')))
             ->setAction($this->generateUrl($route, array('id' => $id)))
             ->setMethod('DELETE')
-            ->getForm()
-        ;
+            ->getForm();
     }
 
 }

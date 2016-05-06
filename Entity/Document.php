@@ -38,6 +38,13 @@ class Document
     private $id;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="code", type="string", length=255, nullable=true)
+     */
+    private $code;
+
+    /**
      * @ORM\ManyToOne(targetEntity="\Flower\FinancesBundle\Entity\DocumentType")
      * @ORM\JoinColumn(name="document_type_id", referencedColumnName="id")
      * @Groups({"public_api"})
@@ -509,9 +516,27 @@ class Document
         return $this->payments;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getCode()
+    {
+        return $this->code;
+    }
+
+    /**
+     * @param mixed $code
+     */
+    public function setCode($code)
+    {
+        $this->code = $code;
+    }
+
+
     function __toString()
     {
-        $name = $this->getId();
+        $name = $this->getType()->getCode();
+        $name .= " #" . $this->getId();
         if ($this->getAccount()) {
             $name .= " " . $this->getAccount()->getName();
         }

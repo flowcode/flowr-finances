@@ -73,6 +73,76 @@ class TransactionService
         /* persist */
         $this->transactionRepository->save($transaction);
 
-        return true;
+        return $transaction;
+    }
+
+    public function createSupplierInvoiceTransaction(Document $document)
+    {
+        $transaction = new Transaction();
+
+        $description = $this->translator->trans("transaction.description.document", array(
+            "%document_code%" => $document->getType()->getCode(),
+            "%document_number%" => $document->getId(),
+            "%document_to%" => $document->getSupplier()->getName(),
+        ), 'Finance');
+
+        $transaction->setDescription($description);
+        $transaction->setDate(new \DateTime());
+
+        $payableAccount = $this->accountRepository->findOneBy(array(
+            'subtype' => Account::SUBTYPE_LIABILITY_PAYABLE,
+        ));
+        $journalEntryPayable = new JournalEntry();
+        $journalEntryPayable->setAccount($payableAccount);
+        $journalEntryPayable->setTransaction($transaction);
+        $journalEntryPayable->setDebit($document->getTotal());
+        $journalEntryPayable->setDate(new \DateTime());
+
+        $transaction->addJournalEntry($journalEntryPayable);
+
+        $journalEntrySupplierAccount = new JournalEntry();
+        $journalEntrySupplierAccount->setAccount($document->getSupplier()->getFinanceAccount());
+        $journalEntrySupplierAccount->setTransaction($transaction);
+        $journalEntrySupplierAccount->setCredit($document->getTotal());
+        $journalEntrySupplierAccount->setDate(new \DateTime());
+        $transaction->addJournalEntry($journalEntrySupplierAccount);
+
+        /* persist */
+        $this->transactionRepository->save($transaction);
+
+        return $transaction;
+    }
+
+    public function createSimpleExpenseTransaction(Account $expenseAccount, Account $assetAccount, $amount, $date)
+    {
+        $transaction = new Transaction();
+
+        $description = $this->translator->trans("transaction.description.simple_expense", array(
+            "%account_to%" => $expenseAccount->getName(),
+        ), 'Finance');
+
+        $transaction->setDescription($description);
+        $transaction->setCircuit(Transaction::CIRCUIT_TWO);
+        $transaction->setDate($date);
+
+        $expenseEntry = new JournalEntry();
+        $expenseEntry->setAccount($expenseAccount);
+        $expenseEntry->setTransaction($transaction);
+        $expenseEntry->setDebit($amount);
+        $expenseEntry->setDate($date);
+        $transaction->addJournalEntry($expenseEntry);
+
+        $assetEntry = new JournalEntry();
+        $assetEntry->setAccount($assetAccount);
+        $assetEntry->setCredit($amount);
+        $assetEntry->setDate($date);
+        $assetEntry->setTransaction($transaction);
+        $transaction->addJournalEntry($assetEntry);
+
+        /* persist */
+        $this->transactionRepository->save($transaction);
+
+        return $transaction;
+
     }
 }

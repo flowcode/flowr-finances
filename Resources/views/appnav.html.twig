@@ -33,7 +33,7 @@
                 </li>
                 <li {% if app_income_payment is defined %}class="active"{% endif %}>
                     <a href="{{ path('finance_payment') }}">
-                        {{ 'payments'|trans({}, 'Finance')|title }}
+                        {{ 'customer_payments'|trans({}, 'Finance')|title }}
                     </a>
                 </li>
             </ul>
@@ -54,7 +54,12 @@
                 </li>
                 <li {% if app_expense_payment is defined %}class="active"{% endif %}>
                     <a href="{{ path('finance_payment') }}">
-                        {{ 'payments'|trans({}, 'Finance')|title }}
+                        {{ 'supplier_payments'|trans({}, 'Finance')|title }}
+                    </a>
+                </li>
+                <li {% if app_expense_payment is defined %}class="active"{% endif %}>
+                    <a href="{{ path('finance_payment_simple_expense') }}">
+                        {{ 'simple_expense_payment'|trans({}, 'Finance')|title }}
                     </a>
                 </li>
             </ul>
