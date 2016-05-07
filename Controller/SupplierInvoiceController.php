@@ -109,7 +109,7 @@ class SupplierInvoiceController extends Controller
         ));
         $document->setType($type);
 
-        $form = $this->createForm(new SupplierInvoiceType(), $document);
+        $form = $this->createForm($this->get('finances.form.type.supplier_invoice'), $document);
 
         if ($form->handleRequest($request)->isValid()) {
             $em = $this->getDoctrine()->getManager();

@@ -139,12 +139,12 @@ class PaymentController extends Controller
                 $receipt->setType($type);
                 $receipt->setTotal($payment->getAmount());
                 $em->persist($receipt);
+                $payment->addDocument($receipt);
             }
 
             $transaction = $this->get('finances.service.transaction')->createSimpleExpenseTransaction($expenseAccount, $assetAccount, $payment->getAmount(), $payment->getDate());
 
             $payment->setTransaction($transaction);
-            $payment->addDocument($receipt);
 
             $em->persist($payment);
             $em->flush();
