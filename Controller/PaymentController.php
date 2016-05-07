@@ -96,9 +96,7 @@ class PaymentController extends Controller
         $payment->setType(Payment::TYPE_EXPENSE);
         $form = $this->createForm(new SimpleExpensePaymentType(), $payment);
 
-        $assetAccounts = $em->getRepository('FlowerFinancesBundle:Account')->findBy(array(
-            'type' => Account::TYPE_ASSET,
-        ));
+        $assetAccounts = $em->getRepository('FlowerFinancesBundle:Account')->getAssetAndLiabilityAccounts();
 
         $expenseAccounts = $em->getRepository('FlowerFinancesBundle:Account')->findBy(array(
             'type' => Account::TYPE_EXPENSE,

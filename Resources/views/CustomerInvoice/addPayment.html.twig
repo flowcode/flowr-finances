@@ -29,7 +29,16 @@
                             Customer Invoice
                         </label>
                         <div class="col-sm-8">
-                            <input class="form-control" disabled name="date" value="{{ document }}">
+                            <input class="form-control" disabled name="document" value="{{ document }}">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label col-sm-2">
+                            Current balance
+                        </label>
+                        <div class="col-sm-8">
+                            <input class="form-control" disabled name="date" value="{{ balance }}">
                         </div>
                     </div>
 
@@ -38,7 +47,7 @@
                             Date
                         </label>
                         <div class="col-sm-8">
-                            <input class="form-control" name="date">
+                            <input class="form-control" name="date" type="date">
                         </div>
                     </div>
 

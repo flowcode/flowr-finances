@@ -86,7 +86,7 @@ class SupplierInvoiceController extends Controller
         ));
         $document->setType($type);
 
-        $form = $this->createForm(new SupplierInvoiceType(), $document);
+        $form = $this->createForm($this->get('finances.form.type.supplier_invoice'), $document);
 
         return array(
             'document' => $document,
@@ -196,9 +196,7 @@ class SupplierInvoiceController extends Controller
     public function addPaymentAction(Document $document)
     {
         $em = $this->getDoctrine()->getManager();
-        $assetAccounts = $em->getRepository('FlowerFinancesBundle:Account')->findBy(array(
-            'type' => Account::TYPE_ASSET,
-        ));
+        $assetAccounts = $em->getRepository('FlowerFinancesBundle:Account')->getAssetAndLiabilityAccounts();
 
         $expenseAccounts = $em->getRepository('FlowerFinancesBundle:Account')->findBy(array(
             'type' => Account::TYPE_EXPENSE,

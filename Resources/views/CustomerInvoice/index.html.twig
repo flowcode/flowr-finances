@@ -51,6 +51,7 @@
                         <th scope="col">{{ thead('document', 'account', 'Account') }}</th>
                         <th scope="col">{{ thead('document', 'total', 'Total') }}</th>
                         <th scope="col">{{ thead('document', 'date', 'Date') }}</th>
+                        <th scope="col">{{ thead('document', 'dueDate', 'Due date') }}</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -64,7 +65,8 @@
                             </td>
                             <td>{{ document.account }}</td>
                             <td>{{ document.total }}</td>
-                            <td>{{ document.created|date('Y-m-d') }}</td>
+                            <td>{{ document.date|date('Y-m-d') }}</td>
+                            <td>{{ document.dueDate|date('Y-m-d') }}</td>
                         </tr>
                     {% endfor %}
                     </tbody>

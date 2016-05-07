@@ -9,13 +9,26 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class SupplierInvoiceType extends AbstractType
 {
+
+    private $accountService;
+
+    public function __construct($accountService)
+    {
+        $this->accountService = $accountService;
+    }
+
     /**
      * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('supplier')
+            ->add('supplier', 'genemu_jqueryselect2_entity',
+                array('class' => 'Flower\ModelBundle\Entity\Clients\Account',
+                    'property' => 'name',
+                    'choices' => $this->accountService->findSuppliers(),
+                    'multiple' => false,
+                    'required' => false))
             ->add('code')
             ->add('total')
             ->add('totalWithTax')

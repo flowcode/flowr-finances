@@ -29,7 +29,7 @@
 {% block body %}
     <section class="content-header">
         <h1>
-            {{ 'supplier_invoices'|trans({}, 'Finance')|capitalize }}
+            {{ 'receipts'|trans({}, 'Finance')|capitalize }}
         </h1>
     </section>
     <section class="content">
@@ -51,22 +51,20 @@
                         <th scope="col">{{ thead('document', 'supplier', 'Supplier') }}</th>
                         <th scope="col">{{ thead('document', 'total', 'Total') }}</th>
                         <th scope="col">{{ thead('document', 'date', 'Date') }}</th>
-                        <th scope="col">{{ thead('document', 'dueDate', 'Due date') }}</th>
                     </tr>
                     </thead>
                     <tbody>
                     {% for document in paginator %}
                         <tr>
                             <td>
-                                <a href="{{ path('finance_document_si_show', {id: document.id}) }}">{{ document.id }}</a>
+                                <a href="{{ path('finance_document_rc_show', {id: document.id}) }}">{{ document.id }}</a>
                             </td>
                             <td>
                                 {{ include('FlowerFinancesBundle:Document:invoice_status_text.html.twig', {'status':document.status}) }}
                             </td>
                             <td>{{ document.supplier }}</td>
                             <td>{{ document.total }}</td>
-                            <td>{{ document.date|date('Y-m-d') }}</td>
-                            <td>{{ document.dueDate|date('Y-m-d') }}</td>
+                            <td>{{ document.created|date('Y-m-d') }}</td>
                         </tr>
                     {% endfor %}
                     </tbody>

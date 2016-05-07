@@ -5,6 +5,7 @@ Created: Creado
 updated: actualizado
 Updated: Actualizado
 Create a new %entity%: Crear %entity%
+Due date: Vencimiento
 
 #accounts
 accounts: cuentas
@@ -28,6 +29,8 @@ customer_credit_note: nota de crédito de cliente
 supplier_invoice: factura de proveedor
 supplier_debit_note: nota de débito de proveedor
 supplier_credit_note: nota de crédito de proveedor
+receipt: recibo
+receipts: recibos
 
 status_draft: borrador
 status_pending: pendiente
@@ -75,3 +78,4 @@ income: ganancia
 incomes: ingresos
 expense: egreso
 expenses: egresos
+balance: balance

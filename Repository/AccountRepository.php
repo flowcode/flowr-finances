@@ -3,6 +3,7 @@
 namespace Flower\FinancesBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
+use Flower\FinancesBundle\Entity\Account;
 
 /**
  * AccountRepository
@@ -30,6 +31,28 @@ class AccountRepository extends EntityRepository
         $qb->leftJoin("a.journalEntries", "je");
         $qb->groupBy("a.name");
 
+
+        return $qb->getQuery()->getResult();
+    }
+
+    public function getLiabilityAndExpenseAccounts(){
+        $qb = $this->createQueryBuilder('a');
+
+        $qb->where("a.type IN (:types)")->setParameter('types', array(
+            Account::TYPE_EXPENSE,
+            Account::TYPE_LIABILITY,
+        ));
+
+        return $qb->getQuery()->getResult();
+    }
+
+    public function getAssetAndLiabilityAccounts(){
+        $qb = $this->createQueryBuilder('a');
+
+        $qb->where("a.type IN (:types)")->setParameter('types', array(
+            Account::TYPE_ASSET,
+            Account::TYPE_LIABILITY,
+        ));
 
         return $qb->getQuery()->getResult();
     }

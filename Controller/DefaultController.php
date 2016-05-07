@@ -20,23 +20,13 @@ class DefaultController extends Controller
         $em = $this->getDoctrine()->getManager();
 
         $accountRepo = $em->getRepository('FlowerFinancesBundle:Account');
-        $paymentRepo = $em->getRepository('FlowerFinancesBundle:Payment');
 
-        $assets = $accountRepo->getQuickStats(Account::TYPE_ASSET);
         $income = $accountRepo->getQuickStats(Account::TYPE_INCOME);
         $expense = $accountRepo->getQuickStats(Account::TYPE_EXPENSE);
-        $liability = $accountRepo->getQuickStats(Account::TYPE_LIABILITY);
-
-        $incomePayments = $paymentRepo->getQuickStats(Payment::TYPE_INCOME);
-        $expensePayments = $paymentRepo->getQuickStats(Payment::TYPE_EXPENSE);
 
         return array(
-            "assets" => count($assets) > 0 ? $assets[0] : $assets,
             "income" => count($income) > 0 ? $income[0] : $income,
             "expense" => count($expense) > 0 ? $expense[0] : $expense,
-            "liability" => count($liability) > 0 ? $liability[0] : $liability,
-            "incomePayments" => $incomePayments,
-            "expensePayments" => $expensePayments,
         );
     }
 

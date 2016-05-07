@@ -1,5 +1,17 @@
 services:
 
+    finances.form.type.customer_invoice:
+        class: Flower\FinancesBundle\Form\Type\CustomerInvoiceType
+        arguments: ['@client.service.account']
+        tags:
+            - { name: form.type, alias: customer_invoice_type }
+
+    finances.form.type.supplier_invoice:
+        class: Flower\FinancesBundle\Form\Type\SupplierInvoiceType
+        arguments: ['@client.service.account']
+        tags:
+            - { name: form.type, alias: supplier_invoice_type }
+
     finances.repository.account:
         class: Doctrine\ORM\EntityRepository
         factory_service: doctrine.orm.default_entity_manager

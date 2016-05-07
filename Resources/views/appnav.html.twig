@@ -54,12 +54,17 @@
                 </li>
                 <li {% if app_expense_payment is defined %}class="active"{% endif %}>
                     <a href="{{ path('finance_payment') }}">
-                        {{ 'supplier_payments'|trans({}, 'Finance')|title }}
+                        {{ 'supplier_payments'|trans({}, 'Finance')|capitalize }}
                     </a>
                 </li>
                 <li {% if app_expense_payment is defined %}class="active"{% endif %}>
                     <a href="{{ path('finance_payment_simple_expense') }}">
-                        {{ 'simple_expense_payment'|trans({}, 'Finance')|title }}
+                        {{ 'simple_expense_payment'|trans({}, 'Finance')|capitalize }}
+                    </a>
+                </li>
+                <li {% if app_supplier_invoices is defined %}class="active"{% endif %}>
+                    <a href="{{ path('finance_document_rc') }}">
+                        {{ 'receipts'|trans({}, 'Finance')|capitalize }}
                     </a>
                 </li>
             </ul>

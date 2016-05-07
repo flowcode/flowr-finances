@@ -9,17 +9,16 @@
 {% block body %}
     <section class="content-header">
         <h1>
-            <a href="{{ path('finance_document_ci') }}">
-                {{ 'customer_invoices'|trans({}, 'Finance')|title }}
+            <a href="{{ path('finance_document_rc') }}">
+                {{ 'receipts'|trans({}, 'Finance')|title }}
             </a>
         </h1>
     </section>
     <section class="content">
-
         <div class="box" id='showDocument'>
             <div class="box-header">
                 <h3 class="box-title">
-                    {{ 'customer_invoice' | trans({}, 'Finance')|capitalize }} #{{ document.id }}
+                    {{ 'receipt' | trans({}, 'Finance')|capitalize }} #{{ document.id }}
                     {{ include('FlowerFinancesBundle:Document:invoice_status.html.twig', {'status':document.status}) }}
                 </h3>
                 <div class="box-tools  pull-right">
@@ -34,35 +33,29 @@
                         <a class="btn btn-link btn-sm" onclick="showEdit(true)">
                             {{ 'Edit'|trans({}, 'Finance') }}
                         </a>
-                        {% if document.status == 'status_pending' %}
-                            <a class="btn btn-link btn-sm"
-                               href="{{ path('finance_document_ci_payments_new',{'id':document.id}) }}">
-                                {{ 'Add payment'|trans({}, 'Finance') }}
-                            </a>
-                        {% endif %}
+                        <a class="btn btn-link btn-sm"
+                           href="{{ path('finance_document_si_payments_new',{'id':document.id}) }}">
+                            {{ 'Add payment'|trans({}, 'Finance') }}
+                        </a>
                     </div>
                     <input name="modal" type="hidden" value="0">
                     {{ form_end(delete_form) }}
+
                 </div>
             </div>
             <div class="box-body">
-                <div class="row">
-                    <div class="col-sm-2">Cliente</div>
-                    <div class="col-sm-10">{{ document.account.name }}</div>
-                    <div class="col-sm-2">Fecha</div>
-                    <div class="col-sm-10">{{ document.date|date }}</div>
-                    <div class="col-sm-2">Vence</div>
-                    <div class="col-sm-10">{{ document.dueDate|date }}</div>
-                </div>
-                <hr>
+                <h4>
+                    {{ 'supplier'|trans({}, 'Product')|title }}: {{ document.supplier }}
+                </h4>
+
                 <h4>Detalle</h4>
                 <table class="table table-condensed">
                     <thead>
                     <tr>
                         <th>{{ 'details' }}</th>
-                        <th>{{ 'quantity' }}</th>
-                        <th>{{ 'unit price' }}</th>
-                        <th>{{ 'total' }}</th>
+                        <th>unidades</th>
+                        <th>precio unitario</th>
+                        <th>total</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -83,62 +76,43 @@
                     </tbody>
                 </table>
 
-                <hr>
-
-                <div class="row">
-                    <div class="col-sm-6">
-                        <h4>{{ 'Totals'|trans({}, 'Finance') }}</h4>
-                        <table class="table table-condensed">
-                            <tbody>
-                            <tr>
-                                <th scope="row">{{ 'Total'|trans({}, 'Finance') }}</th>
-                                <td>{{ document.total }}</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">{{ 'Totalwithtax'|trans({}, 'Finance') }}</th>
-                                <td>{{ document.totalWithTax }}</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">{{ 'Discount'|trans({}, 'Finance') }}</th>
-                                <td>{{ document.discount }}</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">{{ 'Totaldiscount'|trans({}, 'Finance') }}</th>
-                                <td>{{ document.totalDiscount }}</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">{{ 'Tax'|trans({}, 'Finance') }}</th>
-                                <td>{{ document.tax }}</td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="col-sm-6">
-                        <h4>{{ 'payments'|trans({}, 'Finance')|title }}</h4>
-                        <table class="table">
-                            <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>fecha</th>
-                                <th>monto</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {% for payment in document.payments %}
-                                <tr>
-                                    <td>{{ payment.id }}</td>
-                                    <td>{{ payment.date|date }}</td>
-                                    <td>{{ payment.amount }}</td>
-                                </tr>
-                            {% else %}
-                                <tr>
-                                    <td colspan="3">No payments yet</td>
-                                </tr>
-                            {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                <h4>Totales</h4>
+                <table class="table table-hover record_properties">
+                    <tbody>
+                    <tr>
+                        <th scope="row">{{ 'Created'|trans({}, 'Finance') }}</th>
+                        <td>{{ document.created|date('Y-m-d H:i:s') }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">{{ 'Updated'|trans({}, 'Finance') }}</th>
+                        <td>{{ document.updated|date('Y-m-d H:i:s') }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">{{ 'Total'|trans({}, 'Finance') }}</th>
+                        <td>{{ document.total }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">{{ 'Totalwithtax'|trans({}, 'Finance') }}</th>
+                        <td>{{ document.totalWithTax }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">{{ 'Discount'|trans({}, 'Finance') }}</th>
+                        <td>{{ document.discount }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">{{ 'Totaldiscount'|trans({}, 'Finance') }}</th>
+                        <td>{{ document.totalDiscount }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">{{ 'Tax'|trans({}, 'Finance') }}</th>
+                        <td>{{ document.tax }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">{{ 'Status'|trans({}, 'Finance') }}</th>
+                        <td></td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
             <div class="box-footer">
 
@@ -172,6 +146,26 @@
             <div class="box-footer">
             </div>
         </div>
+
+        <div class="box">
+            <div class="box-header">
+                <h3>Payments</h3>
+            </div>
+
+            <div class="box-body">
+                <table class="table">
+                    {% for payment in document.payments %}
+                        <tr>
+                            <td>{{ payment.id }}</td>
+                            <td>{{ payment.created|date }}</td>
+                            <td>{{ payment.amount }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+
+        </div>
+
     </section>
 
     <div class="btn-group record_actions"></div>

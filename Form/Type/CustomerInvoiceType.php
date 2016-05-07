@@ -9,6 +9,15 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class CustomerInvoiceType extends AbstractType
 {
+
+    private $accountService;
+
+    public function __construct($accountService)
+    {
+        $this->accountService = $accountService;
+    }
+
+
     /**
      * {@inheritdoc}
      */
@@ -18,9 +27,12 @@ class CustomerInvoiceType extends AbstractType
             ->add('account', 'genemu_jqueryselect2_entity',
                 array('class' => 'Flower\ModelBundle\Entity\Clients\Account',
                     'property' => 'name',
+                    'choices' => $this->accountService->findClients(),
                     'multiple' => false,
                     'required' => false))
             ->add('code')
+            ->add('date')
+            ->add('dueDate')
             ->add('total')
             ->add('totalWithTax')
             ->add('discount')

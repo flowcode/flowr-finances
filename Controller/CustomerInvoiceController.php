@@ -55,7 +55,7 @@ class CustomerInvoiceController extends Controller
      */
     public function showAction(Document $document)
     {
-        $editForm = $this->createForm(new DocumentType(), $document, array(
+        $editForm = $this->createForm($this->get('finances.form.type.customer_invoice'), $document, array(
             'action' => $this->generateUrl('finance_document_ci_update', array('id' => $document->getid())),
             'method' => 'PUT',
         ));
@@ -85,7 +85,7 @@ class CustomerInvoiceController extends Controller
         ));
         $document->setType($type);
 
-        $form = $this->createForm(new CustomerInvoiceType(), $document);
+        $form = $this->createForm($this->get('finances.form.type.customer_invoice'), $document);
 
         return array(
             'document' => $document,
@@ -157,7 +157,7 @@ class CustomerInvoiceController extends Controller
         ));
         $document->setType($type);
 
-        $form = $this->createForm(new CustomerInvoiceType(), $document);
+        $form = $this->createForm($this->get('finances.form.type.customer_invoice'), $document);
 
         if ($form->handleRequest($request)->isValid()) {
             $em = $this->getDoctrine()->getManager();
@@ -188,7 +188,7 @@ class CustomerInvoiceController extends Controller
      */
     public function editAction(Document $document)
     {
-        $editForm = $this->createForm(new DocumentType(), $document, array(
+        $editForm = $this->createForm($this->get('finances.form.type.customer_invoice'), $document, array(
             'action' => $this->generateUrl('finance_document_ci_update', array('id' => $document->getid())),
             'method' => 'PUT',
         ));
@@ -210,7 +210,7 @@ class CustomerInvoiceController extends Controller
      */
     public function updateAction(Document $document, Request $request)
     {
-        $editForm = $this->createForm(new DocumentType(), $document, array(
+        $editForm = $this->createForm($this->get('finances.form.type.customer_invoice'), $document, array(
             'action' => $this->generateUrl('finance_document_ci_update', array('id' => $document->getid())),
             'method' => 'PUT',
         ));
@@ -248,8 +248,16 @@ class CustomerInvoiceController extends Controller
             'type' => Account::TYPE_ASSET,
         ));
 
+        $paymentAmount = 0;
+        foreach ($document->getPayments() as $payment) {
+            $paymentAmount += $payment->getAmount();
+        }
+
+        $balance = $document->getTotal() - $paymentAmount;
+
         return array(
             'assetAccounts' => $assetAccounts,
+            'balance' => $balance,
             'document' => $document,
         );
     }
@@ -322,6 +330,7 @@ class CustomerInvoiceController extends Controller
             $payment->setName('Payment ' . $document->__toString());
             $payment->setDescription('Payment ' . $document->__toString());
             $payment->addDocument($document);
+            $payment->setDate($date);
             $document->addPayment($payment);
 
             $em->persist($payment);
