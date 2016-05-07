@@ -30,11 +30,13 @@ class SupplierInvoiceType extends AbstractType
                     'multiple' => false,
                     'required' => false))
             ->add('code')
+            ->add('date')
+            ->add('dueDate')
             ->add('total')
-            ->add('totalWithTax')
             ->add('discount')
             ->add('totalDiscount')
             ->add('tax')
+            ->add('totalWithTax')
             ->add('status', 'choice', array(
                 'choices' => array(
                     Document::STATUS_DRAFT => Document::STATUS_DRAFT,

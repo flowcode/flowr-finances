@@ -81,6 +81,8 @@ class SupplierInvoiceController extends Controller
     public function newAction()
     {
         $document = new Document();
+        $document->setDate(new \DateTime());
+        $document->setDueDate(new \DateTime());
         $type = $this->getDoctrine()->getManager()->getRepository('FlowerFinancesBundle:DocumentType')->findOneBy(array(
             'name' => \Flower\FinancesBundle\Entity\DocumentType::TYPE_SUPPLIER_INVOICE
         ));
@@ -174,6 +176,11 @@ class SupplierInvoiceController extends Controller
 
         if ($editForm->handleRequest($request)->isValid()) {
             $this->getDoctrine()->getManager()->flush();
+
+            /* pending documents generates accounting transactions */
+            if ($document->getStatus() == Document::STATUS_PENDING) {
+                $this->get('finances.service.transaction')->createSupplierInvoiceTransaction($document);
+            }
 
             return $this->redirect($this->generateUrl('finance_document_si_show', array('id' => $document->getId())));
         }
