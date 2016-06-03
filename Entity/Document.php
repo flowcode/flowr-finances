@@ -6,7 +6,9 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\OneToMany;
 use Doctrine\ORM\Mapping\ManyToMany;
+use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\JoinTable;
+use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\OneToOne;
 use Gedmo\Mapping\Annotation as Gedmo;
 use JMS\Serializer\Annotation\Groups;
@@ -76,6 +78,12 @@ class Document
      * @Groups({"public_api"})
      */
     private $supplier;
+
+    /**
+     * @ManyToOne(targetEntity="\Flower\FinancesBundle\Entity\Account")
+     * @JoinColumn(name="finance_account_id", referencedColumnName="id")
+     */
+    private $financeAccount;
 
     /**
      * @var \DateTime
@@ -165,6 +173,7 @@ class Document
         $this->status = self::STATUS_DRAFT;
         $this->items = new ArrayCollection();
         $this->payments = new ArrayCollection();
+        $this->date = new \DateTime();
     }
 
 
@@ -578,6 +587,22 @@ class Document
         $this->dueDate = $dueDate;
     }
 
+    /**
+     * Get Payment Balance.
+     *
+     * @return float
+     */
+    function getBalance()
+    {
+        $paymentAmount = 0;
+        foreach ($this->getPayments() as $payment) {
+            $paymentAmount += $payment->getAmount();
+        }
+
+        $balance = $this->getTotal() - $paymentAmount;
+        return $balance;
+    }
+
 
     function __toString()
     {
@@ -593,4 +618,26 @@ class Document
     }
 
 
+    /**
+     * Set financeAccount
+     *
+     * @param \Flower\FinancesBundle\Entity\Account $financeAccount
+     * @return Document
+     */
+    public function setFinanceAccount(\Flower\FinancesBundle\Entity\Account $financeAccount = null)
+    {
+        $this->financeAccount = $financeAccount;
+
+        return $this;
+    }
+
+    /**
+     * Get financeAccount
+     *
+     * @return \Flower\FinancesBundle\Entity\Account
+     */
+    public function getFinanceAccount()
+    {
+        return $this->financeAccount;
+    }
 }

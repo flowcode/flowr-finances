@@ -2,6 +2,7 @@
 
 namespace Flower\FinancesBundle\Form\Type;
 
+use Flower\FinancesBundle\Entity\Account;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -16,6 +17,14 @@ class AccountType extends AbstractType
         $builder
             ->add('code')
             ->add('name')
+            ->add('parent', 'y_tree', array(
+                'class' => 'Flower\FinancesBundle\Entity\Account',
+                'orderFields' => array('root' => 'asc','lft' => 'asc'),
+                'prefixAttributeName' => 'data-level-prefix',
+                'treeLevelField' => 'lvl',
+                'required' => false,
+                'multiple' => false,
+                'attr' => array("class" => "tall")))
             ->add('type', 'choice', array(
                 'choices' => array(
                     1 => 'account_type_asset',
@@ -31,6 +40,7 @@ class AccountType extends AbstractType
                 'choices' => array(
                     1 => 'SUBTYPE_ASSET_RECEIVABLE',
                     2 => 'SUBTYPE_LIABILITY_PAYABLE',
+                    Account::SUBTYPE_INCOME_SALES => 'SUBTYPE_INCOME_SALES',
                 )
             ));
     }

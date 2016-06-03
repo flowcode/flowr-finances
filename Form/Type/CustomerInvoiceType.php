@@ -45,6 +45,14 @@ class CustomerInvoiceType extends AbstractType
                     Document::STATUS_PAID => Document::STATUS_PAID,
                 )
             ))
+            ->add('financeAccount', 'y_tree', array(
+                'class' => 'Flower\FinancesBundle\Entity\Account',
+                'orderFields' => array('root' => 'asc','lft' => 'asc'),
+                'prefixAttributeName' => 'data-level-prefix',
+                'treeLevelField' => 'lvl',
+                'required' => false,
+                'multiple' => false,
+                'attr' => array("class" => "tall")))
             ->add('items', 'collection', array(
                 'type' => new DocumentItemType(),
                 'allow_add' => true,

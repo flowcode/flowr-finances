@@ -1,0 +1,5 @@
+flower_api_finance_account_incomes:
+    path:     /accounts/incomes
+    defaults: { _controller: FlowerFinancesBundle:Api\Account:getIncomes }
+    methods: [GET]
+

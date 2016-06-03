@@ -114,6 +114,7 @@ class CustomerInvoiceController extends Controller
         $type = $this->getDoctrine()->getManager()->getRepository('FlowerFinancesBundle:DocumentType')->findOneBy(array(
             'name' => \Flower\FinancesBundle\Entity\DocumentType::TYPE_CUSTOMER_INVOICE
         ));
+        $document->setFinanceAccount($sale->getFinanceAccount());
         $document->setType($type);
         $document->setSale($sale);
 
@@ -303,9 +304,12 @@ class CustomerInvoiceController extends Controller
             $journalEntryCustomerAccount->setDate($date);
             $transaction->addJournalEntry($journalEntryCustomerAccount);
 
-            $salesAccount = $em->getRepository('FlowerFinancesBundle:Account')->findOneBy(array(
-                'subtype' => Account::SUBTYPE_INCOME_SALES,
-            ));
+            $salesAccount = $document->getFinanceAccount();
+            if (!$salesAccount) {
+                $salesAccount = $em->getRepository('FlowerFinancesBundle:Account')->findOneBy(array(
+                    'subtype' => Account::SUBTYPE_INCOME_SALES,
+                ));
+            }
             $salesEntry = new JournalEntry();
             $salesEntry->setAccount($salesAccount);
             $salesEntry->setTransaction($transaction);

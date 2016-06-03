@@ -65,6 +65,7 @@
                         <th>{{ 'debit'|trans({}, 'Finance')|title }}</th>
                         <th>{{ 'credit'|trans({}, 'Finance')|title }}</th>
                         <th>{{ 'date'|trans({}, 'Finance')|title }}</th>
+                        <th></th>
                     </tr>
                     </thead>
                     <tbody>
@@ -74,6 +75,11 @@
                             <td>{{ journalEntry.debit }}</td>
                             <td>{{ journalEntry.credit }}</td>
                             <td>{{ journalEntry.date|date('Y-m-d') }}</td>
+                            <td>
+                                <a href="{{ path('finance_journal_entry_edit', {id: journalEntry.id }) }}" class="btn btn-link btn-xs">
+                                    {{ 'edit'|trans }}
+                                </a>
+                            </td>
                         </tr>
                     {% endfor %}
                     </tbody>

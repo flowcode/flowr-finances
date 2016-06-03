@@ -10,6 +10,7 @@ use JMS\Serializer\Annotation\Groups;
 /**
  * Account
  *
+ * @Gedmo\Tree(type="nested")
  * @ORM\Table(name="finance_account")
  * @ORM\Entity(repositoryClass="Flower\FinancesBundle\Repository\AccountRepository")
  */
@@ -32,6 +33,7 @@ class Account
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
+     * @Groups({"api","public_api"})
      */
     private $id;
 
@@ -46,6 +48,7 @@ class Account
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255)
+     * @Groups({"api","public_api"})
      */
     private $name;
 
@@ -67,9 +70,50 @@ class Account
      * @var boolean
      *
      * @ORM\Column(name="editable", type="boolean")
-     * @Groups({"public_api"})
+     * @Groups({"api","public_api"})
      */
     protected $editable;
+
+    /**
+     * @var integer
+     *
+     * @Gedmo\TreeLeft
+     * @ORM\Column(name="lft", type="integer")
+     */
+    protected $lft;
+
+    /**
+     * @var integer
+     *
+     * @Gedmo\TreeRight
+     * @ORM\Column(name="rgt", type="integer")
+     */
+    protected $rgt;
+    /**
+     * @var integer
+     *
+     * @Gedmo\TreeLevel
+     * @ORM\Column(name="lvl", type="integer")
+     */
+    protected $lvl;
+    /**
+     * @Gedmo\TreeRoot
+     * @ORM\Column(name="root", type="integer", nullable=true)
+     */
+    protected $root;
+
+    /**
+     * @Gedmo\TreeParent
+     * @ORM\ManyToOne(targetEntity="\Flower\FinancesBundle\Entity\Account", inversedBy="children")
+     * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
+     */
+    protected $parent;
+
+    /**
+     * @ORM\OneToMany(targetEntity="\Flower\FinancesBundle\Entity\Account", mappedBy="parent")
+     * @ORM\OrderBy({"lft" = "ASC"})
+     */
+    protected $children;
 
     /**
      * @OneToMany(targetEntity="\Flower\FinancesBundle\Entity\JournalEntry", mappedBy="account")
@@ -98,6 +142,7 @@ class Account
     public function __construct()
     {
         $this->journalEntries = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->children = new \Doctrine\Common\Collections\ArrayCollection();
         $this->editable = true;
     }
 
@@ -328,4 +373,152 @@ class Account
     }
 
 
+
+    /**
+     * Set lft
+     *
+     * @param integer $lft
+     * @return Account
+     */
+    public function setLft($lft)
+    {
+        $this->lft = $lft;
+
+        return $this;
+    }
+
+    /**
+     * Get lft
+     *
+     * @return integer 
+     */
+    public function getLft()
+    {
+        return $this->lft;
+    }
+
+    /**
+     * Set rgt
+     *
+     * @param integer $rgt
+     * @return Account
+     */
+    public function setRgt($rgt)
+    {
+        $this->rgt = $rgt;
+
+        return $this;
+    }
+
+    /**
+     * Get rgt
+     *
+     * @return integer 
+     */
+    public function getRgt()
+    {
+        return $this->rgt;
+    }
+
+    /**
+     * Set lvl
+     *
+     * @param integer $lvl
+     * @return Account
+     */
+    public function setLvl($lvl)
+    {
+        $this->lvl = $lvl;
+
+        return $this;
+    }
+
+    /**
+     * Get lvl
+     *
+     * @return integer 
+     */
+    public function getLvl()
+    {
+        return $this->lvl;
+    }
+
+    /**
+     * Set root
+     *
+     * @param integer $root
+     * @return Account
+     */
+    public function setRoot($root)
+    {
+        $this->root = $root;
+
+        return $this;
+    }
+
+    /**
+     * Get root
+     *
+     * @return integer 
+     */
+    public function getRoot()
+    {
+        return $this->root;
+    }
+
+    /**
+     * Set parent
+     *
+     * @param \Flower\FinancesBundle\Entity\Account $parent
+     * @return Account
+     */
+    public function setParent(\Flower\FinancesBundle\Entity\Account $parent = null)
+    {
+        $this->parent = $parent;
+
+        return $this;
+    }
+
+    /**
+     * Get parent
+     *
+     * @return \Flower\FinancesBundle\Entity\Account 
+     */
+    public function getParent()
+    {
+        return $this->parent;
+    }
+
+    /**
+     * Add children
+     *
+     * @param \Flower\FinancesBundle\Entity\Account $children
+     * @return Account
+     */
+    public function addChild(\Flower\FinancesBundle\Entity\Account $children)
+    {
+        $this->children[] = $children;
+
+        return $this;
+    }
+
+    /**
+     * Remove children
+     *
+     * @param \Flower\FinancesBundle\Entity\Account $children
+     */
+    public function removeChild(\Flower\FinancesBundle\Entity\Account $children)
+    {
+        $this->children->removeElement($children);
+    }
+
+    /**
+     * Get children
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getChildren()
+    {
+        return $this->children;
+    }
 }

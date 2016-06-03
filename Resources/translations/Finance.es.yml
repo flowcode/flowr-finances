@@ -20,6 +20,8 @@ account_type_equity: equidad
 
 
 #documents
+view invoice: Ver factura
+create invoice: Crear factura
 customer_invoices: facturas a clientes
 supplier_invoices: facturas de proveedores
 
@@ -52,6 +54,8 @@ Items: Descripción
 customer_payments: pagos de clientes
 supplier_payments: pagos a proveedores
 simple_expense_payment: gasto simple
+pending to pay: Pendiente de pago
+payments: Pagos
 
 STATUS_DRAFT: Borrador
 STATUS_PENDING: Pendiente de pago

@@ -14,9 +14,14 @@ class JournalEntryType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('account', null, array(
-                'placeholder' => 'Cuenta',
-            ))
+            ->add('account', 'y_tree', array(
+                'class' => 'Flower\FinancesBundle\Entity\Account',
+                'orderFields' => array('root' => 'asc', 'lft' => 'asc'),
+                'prefixAttributeName' => 'data-level-prefix',
+                'treeLevelField' => 'lvl',
+                'required' => false,
+                'multiple' => false,
+                'attr' => array("class" => "tall")))
             ->add('debit', null, array(
                 'required' => false,
                 'attr' => array(

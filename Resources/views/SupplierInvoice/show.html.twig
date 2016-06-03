@@ -9,7 +9,7 @@
 {% block body %}
     <section class="content-header">
         <h1>
-            <a href="{{ path('finance_document_ci') }}">
+            <a href="{{ path('finance_document_si') }}">
                 {{ 'supplier_invoices'|trans({}, 'Finance')|title }}
             </a>
         </h1>
@@ -76,43 +76,64 @@
                     </tbody>
                 </table>
 
-                <h4>Totales</h4>
-                <table class="table table-hover record_properties">
-                    <tbody>
-                    <tr>
-                        <th scope="row">{{ 'Created'|trans({}, 'Finance') }}</th>
-                        <td>{{ document.created|date('Y-m-d H:i:s') }}</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">{{ 'Updated'|trans({}, 'Finance') }}</th>
-                        <td>{{ document.updated|date('Y-m-d H:i:s') }}</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">{{ 'Total'|trans({}, 'Finance') }}</th>
-                        <td>{{ document.total }}</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">{{ 'Totalwithtax'|trans({}, 'Finance') }}</th>
-                        <td>{{ document.totalWithTax }}</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">{{ 'Discount'|trans({}, 'Finance') }}</th>
-                        <td>{{ document.discount }}</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">{{ 'Totaldiscount'|trans({}, 'Finance') }}</th>
-                        <td>{{ document.totalDiscount }}</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">{{ 'Tax'|trans({}, 'Finance') }}</th>
-                        <td>{{ document.tax }}</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">{{ 'Status'|trans({}, 'Finance') }}</th>
-                        <td></td>
-                    </tr>
-                    </tbody>
-                </table>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <h4>{{ 'Totals'|trans({}, 'Finance') }}</h4>
+                        <table class="table table-condensed table-bordered">
+                            <tbody>
+                            <tr>
+                                <th scope="row">{{ 'Discount'|trans({}, 'Finance') }}</th>
+                                <td>{{ document.discount }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">{{ 'Totaldiscount'|trans({}, 'Finance') }}</th>
+                                <td>{{ document.totalDiscount }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">{{ 'Tax'|trans({}, 'Finance') }}</th>
+                                <td>{{ document.tax }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">{{ 'Totalwithtax'|trans({}, 'Finance') }}</th>
+                                <td>{{ document.totalWithTax }}</td>
+                            </tr>
+                            <tr class="bg-gray">
+                                <th scope="row">{{ 'Total'|trans({}, 'Finance') }}</th>
+                                <td>
+                                    <strong>{{ document.total }}</strong>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-sm-6">
+                        <h4>{{ 'payments'|trans({}, 'Finance')|title }}</h4>
+                        {{ 'pending to pay'|trans({}, 'Finance')|title }}: {{ document.getBalance() }}
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>fecha</th>
+                                <th>monto</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for payment in document.payments %}
+                                <tr>
+                                    <td>{{ payment.id }}</td>
+                                    <td>{{ payment.date|date }}</td>
+                                    <td>{{ payment.amount }}</td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td colspan="3">No payments yet</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
             </div>
             <div class="box-footer">
 
@@ -147,24 +168,6 @@
             </div>
         </div>
 
-        <div class="box">
-            <div class="box-header">
-                <h3>Payments</h3>
-            </div>
-
-            <div class="box-body">
-                <table class="table">
-                    {% for payment in document.payments %}
-                        <tr>
-                            <td>{{ payment.id }}</td>
-                            <td>{{ payment.created|date }}</td>
-                            <td>{{ payment.amount }}</td>
-                        </tr>
-                    {% endfor %}
-                </table>
-            </div>
-
-        </div>
 
     </section>
 

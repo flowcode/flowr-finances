@@ -88,16 +88,8 @@
                 <div class="row">
                     <div class="col-sm-6">
                         <h4>{{ 'Totals'|trans({}, 'Finance') }}</h4>
-                        <table class="table table-condensed">
+                        <table class="table table-condensed table-bordered">
                             <tbody>
-                            <tr>
-                                <th scope="row">{{ 'Total'|trans({}, 'Finance') }}</th>
-                                <td>{{ document.total }}</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">{{ 'Totalwithtax'|trans({}, 'Finance') }}</th>
-                                <td>{{ document.totalWithTax }}</td>
-                            </tr>
                             <tr>
                                 <th scope="row">{{ 'Discount'|trans({}, 'Finance') }}</th>
                                 <td>{{ document.discount }}</td>
@@ -110,11 +102,22 @@
                                 <th scope="row">{{ 'Tax'|trans({}, 'Finance') }}</th>
                                 <td>{{ document.tax }}</td>
                             </tr>
+                            <tr>
+                                <th scope="row">{{ 'Totalwithtax'|trans({}, 'Finance') }}</th>
+                                <td>{{ document.totalWithTax }}</td>
+                            </tr>
+                            <tr class="bg-gray">
+                                <th scope="row">{{ 'Total'|trans({}, 'Finance') }}</th>
+                                <td>
+                                    <strong>{{ document.total }}</strong>
+                                </td>
+                            </tr>
                             </tbody>
                         </table>
                     </div>
                     <div class="col-sm-6">
                         <h4>{{ 'payments'|trans({}, 'Finance')|title }}</h4>
+                        {{ 'pending to pay'|trans({}, 'Finance')|title }}: {{ document.getBalance() }}
                         <table class="table">
                             <thead>
                             <tr>
